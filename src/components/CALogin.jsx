@@ -71,11 +71,14 @@ const CALogin = () => {
               // TODO: change this input use chadcn opt box
               <Input placeholder="Enter OTP" />
             )}
-            <Button>{otpSent ? "Verify OTP" : "Send OTP"}</Button>
+
+            <Button onClick={() => setStep(2)}>
+              {otpSent ? "Verify OTP" : "Send OTP"}
+            </Button>
           </form>
         )}
 
-        {step === 1 && (
+        {step === 2 && (
           <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2 ">
             <div className="md:col-span-2 text-gray-500 text-sm bg-gray-100 p-3 rounded-xl border border-gray-300">
               Mobile Number: {formData.phone}

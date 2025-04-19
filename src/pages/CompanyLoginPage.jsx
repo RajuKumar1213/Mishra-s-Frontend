@@ -82,7 +82,9 @@ const CompanyLogin = () => {
               onChange={handleChange}
               required
             />
-            <Button type="submit">Login</Button>
+            <Button onClick={() => setIsLoggedIn(true)} type="submit">
+              Login
+            </Button>
           </form>
         </div>
       ) : (
