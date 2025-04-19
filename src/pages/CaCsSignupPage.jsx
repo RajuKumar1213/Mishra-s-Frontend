@@ -4,9 +4,7 @@ import { CALogin, Container } from "../components";
 function CaCsSignupPage() {
   return (
     <div>
-      <Container>
-        <CALogin />
-      </Container>
+      <CALogin />
     </div>
   );
 }

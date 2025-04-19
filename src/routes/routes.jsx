@@ -6,6 +6,7 @@ import {
   CaCsSignupPage,
   ServicesPage,
   CompanyLoginPage,
+  CacsPannelPage,
 } from "../pages";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
 
@@ -28,11 +29,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "services",
-        element: <ServicesPage />, // Redirect here after OTP verification
+        element: <ServicesPage />,
       },
       {
         path: "company-login",
-        element: <CompanyLoginPage />, // Redirect here after OTP verification
+        element: <CompanyLoginPage />,
+      },
+      {
+        path: "professional/:username",
+        element: <CacsPannelPage />,
       },
     ],
   },

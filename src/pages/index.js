@@ -3,6 +3,7 @@ import HeroPage from "./HeroPage";
 import CustomerLoginPage from "./CustomerLoginPage";
 import ServicesPage from "./ServicesPage";
 import CompanyLoginPage from "./CompanyLoginPage";
+import CacsPannelPage from "./CacsPannelPage";
 
 export {
   CaCsSignupPage,
@@ -10,4 +11,5 @@ export {
   CustomerLoginPage,
   ServicesPage,
   CompanyLoginPage,
+  CacsPannelPage,
 };

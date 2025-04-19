@@ -57,10 +57,12 @@ const CompanyLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5] px-4 py-10">
+    <div className="bg-[#FEFCE8] min-h-screen flex items-center justify-center relative overflow-hidden px-4 py-10">
+      {/* Subtle Background Pattern */}
+
       {!isLoggedIn ? (
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-          <h2 className="text-3xl font-bold text-[#1A237E] mb-6 text-center">
+        <div className="bg-white/30 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md border border-[#10B981]/20">
+          <h2 className="text-3xl font-bold text-[#374151] mb-6 text-center font-poppins drop-shadow-md">
             Company Login
           </h2>
           <form onSubmit={handleLogin} className="grid gap-4">
@@ -88,21 +90,21 @@ const CompanyLogin = () => {
           </form>
         </div>
       ) : (
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-5xl">
-          <h2 className="text-3xl font-bold text-[#1A237E] mb-6 text-center">
+        <div className="bg-white/30 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-5xl border border-[#10B981]/20">
+          <h2 className="text-3xl font-bold text-[#374151] mb-6 text-center font-poppins drop-shadow-md">
             Company Dashboard
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             {/* CA/CS List */}
             <div>
-              <h3 className="text-2xl font-semibold text-[#1A237E] mb-4">
+              <h3 className="text-2xl font-semibold text-[#374151] mb-4 font-poppins">
                 CA/CS List
               </h3>
               <ul className="space-y-4">
                 {dashboardData.cas.map((ca) => (
                   <li
                     key={ca.id}
-                    className="p-4 bg-gray-100 text-gray-700 rounded-lg shadow-sm flex justify-between items-center"
+                    className="p-4 bg-white/50 backdrop-blur-md text-[#374151] rounded-lg shadow-md border border-[#10B981]/20"
                   >
                     <span>
                       {ca.name} (Rating: {ca.rating})
@@ -114,14 +116,14 @@ const CompanyLogin = () => {
 
             {/* Customer List */}
             <div>
-              <h3 className="text-2xl  font-semibold text-[#1A237E] mb-4">
+              <h3 className="text-2xl  font-semibold text-[#374151] mb-4 font-poppins">
                 Customer List
               </h3>
               <ul className="space-y-4">
                 {dashboardData.customers.map((customer) => (
                   <li
                     key={customer.id}
-                    className="p-4 bg-gray-100 text-gray-700 rounded-lg shadow-sm flex justify-between items-center"
+                    className="p-4 bg-white/50 backdrop-blur-md text-[#374151] rounded-lg shadow-md border border-[#10B981]/20 flex justify-between items-center"
                   >
                     <span>
                       {customer.name} - {customer.task}
