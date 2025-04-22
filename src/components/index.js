@@ -5,10 +5,10 @@ import CALogin from "./CALogin";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Container from "./Container";
-// import AuthLayout from "./AuthLayout";
+import AuthLayout from "./AuthLayout";
 import KeyFeatures from "./KeyFeatures";
 import Services from "./Services";
-import { CustomerLogin } from "./CustomerLogin";
+import CustomerLogin from "./CustomerLogin";
 
 export {
   Button,
@@ -19,7 +19,7 @@ export {
   Footer,
   Container,
   KeyFeatures,
-  CustomerLogin,
   Services,
-  //   AuthLayout,
+  AuthLayout,
+  CustomerLogin,
 };

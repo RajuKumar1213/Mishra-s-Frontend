@@ -1,153 +1,264 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaBuilding, FaLock, FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import extractErrorMessage from "../utils/extractErrorMessage";
+import companyService from "../services/companyService";
+import { useForm } from "react-hook-form";
+import spinner from "/spinner.svg";
 
 const CompanyLogin = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [resendCountdown, setResendCountdown] = useState(0);
+  const [startCountdown, setStartCountdown] = useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
-  const [dashboardData, setDashboardData] = useState({
-    cas: [
-      { id: 1, name: "CA John Doe", rating: 4.8 },
-      { id: 2, name: "CA Jane Smith", rating: 4.5 },
-      { id: 3, name: "CS Michael Brown", rating: 4.7 },
-      { id: 4, name: "CA Emily Davis", rating: 4.6 },
-      { id: 5, name: "CS Sarah Wilson", rating: 4.9 },
-      { id: 6, name: "CA David Johnson", rating: 4.4 },
-      { id: 7, name: "CS Olivia Martinez", rating: 4.3 },
-      { id: 8, name: "CA Daniel Garcia", rating: 4.2 },
-    ],
-    customers: [
-      { id: 1, name: "Customer A", task: "Tax Filing" },
-      { id: 2, name: "Customer B", task: "Company Registration" },
-      { id: 3, name: "Customer C", task: "GST Filing" },
-      { id: 4, name: "Customer D", task: "Income Tax Return" },
-      { id: 5, name: "Customer E", task: "Audit Services" },
-      { id: 6, name: "Customer F", task: "Business Incorporation" },
-      { id: 7, name: "Customer G", task: "Trademark Registration" },
-      { id: 8, name: "Customer H", task: "Financial Planning" },
-    ],
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleSendMail = (data) => {
+    setLoading(true);
+    setError("");
+    setEmail(data.email);
+
+    companyService
+      .sendCompanyMail(data)
+      .then((response) => {
+        if (response.statusCode === 200) {
+          setOtpSent(true);
+          toast.success("OTP sent successfully! Your otp is " + response.data);
+          setStartCountdown(true);
+          setResendCountdown(30);
+        }
+      })
+      .catch((error) => {
+        const message = extractErrorMessage(error);
+        setError(message);
+        toast.error(message);
+        setStartCountdown(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (
-      formData.email === "admin@company.com" &&
-      formData.password === "password123"
-    ) {
-      // Simulate login
-      console.log("Login successful");
-      setIsLoggedIn(true);
-    } else {
-      alert("Invalid email or password");
+  const handleVerifyOtp = (data) => {
+    setLoading(true);
+
+    const payload = {
+      email: email,
+      otp: data.otp,
+    };
+
+    companyService
+      .verifyCompanyOtp(payload)
+      .then((response) => {
+        if (response.statusCode === 200) {
+          const { accessToken, refreshToken } = response.data;
+
+          // Store tokens and role
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+          localStorage.setItem("role", "Company");
+
+          toast.success("OTP verified successfully!");
+
+          // Check if company details are complete
+          return companyService.getCompanyProfile();
+        }
+      })
+      .then((response) => {
+        if (response && response.statusCode === 200) {
+          const { company } = response.data;
+          if (company.phone !== "" && company.address !== "") {
+            // Navigate to the dashboard if details are complete
+            navigate("/company/dashboard");
+          } else {
+            // Navigate to the fill details page if not complete
+            navigate("fill-company-details");
+          }
+        }
+      })
+      .catch((error) => {
+        const message = extractErrorMessage(error);
+        setError(message);
+        toast.error(message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleResendOtp = () => {
+    if (resendCountdown > 0) return;
+    setLoading(true);
+    setError("");
+
+    companyService
+      .sendCompanyMail({ email })
+      .then((response) => {
+        if (response.statusCode === 200) {
+          toast.success(
+            "OTP resent successfully! Your otp is " + response.data
+          );
+          setResendCountdown(30);
+          setStartCountdown(true);
+        }
+      })
+      .catch((error) => {
+        const message = extractErrorMessage(error);
+        setError(message);
+        toast.error(message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    let timer;
+    if (startCountdown && resendCountdown > 0) {
+      timer = setTimeout(() => {
+        setResendCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (resendCountdown === 0) {
+      setStartCountdown(false);
     }
-  };
-
-  const handleAssignTask = (customerId, caId) => {
-    console.log(`Assigned task of Customer ID ${customerId} to CA ID ${caId}`);
-    alert(`Task assigned successfully!`);
-  };
+    return () => clearTimeout(timer);
+  }, [resendCountdown, startCountdown]);
 
   return (
-    <div className="bg-[#FEFCE8] min-h-screen flex items-center justify-center relative overflow-hidden px-4 py-10">
-      {/* Subtle Background Pattern */}
-
-      {!isLoggedIn ? (
-        <div className="bg-white/30 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md border border-[#10B981]/20">
-          <h2 className="text-3xl font-bold text-[#374151] mb-6 text-center font-poppins drop-shadow-md">
-            Company Login
-          </h2>
-          <form onSubmit={handleLogin} className="grid gap-4">
-            <Input
-              type="email"
-              name="email"
-              label="Email Address"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="password"
-              name="password"
-              label="Password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <Button onClick={() => setIsLoggedIn(true)} type="submit">
-              Login
-            </Button>
-          </form>
-        </div>
-      ) : (
-        <div className="bg-white/30 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-5xl border border-[#10B981]/20">
-          <h2 className="text-3xl font-bold text-[#374151] mb-6 text-center font-poppins drop-shadow-md">
-            Company Dashboard
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* CA/CS List */}
-            <div>
-              <h3 className="text-2xl font-semibold text-[#374151] mb-4 font-poppins">
-                CA/CS List
-              </h3>
-              <ul className="space-y-4">
-                {dashboardData.cas.map((ca) => (
-                  <li
-                    key={ca.id}
-                    className="p-4 bg-white/50 backdrop-blur-md text-[#374151] rounded-lg shadow-md border border-[#10B981]/20"
-                  >
-                    <span>
-                      {ca.name} (Rating: {ca.rating})
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Customer List */}
-            <div>
-              <h3 className="text-2xl  font-semibold text-[#374151] mb-4 font-poppins">
-                Customer List
-              </h3>
-              <ul className="space-y-4">
-                {dashboardData.customers.map((customer) => (
-                  <li
-                    key={customer.id}
-                    className="p-4 bg-white/50 backdrop-blur-md text-[#374151] rounded-lg shadow-md border border-[#10B981]/20 flex justify-between items-center"
-                  >
-                    <span>
-                      {customer.name} - {customer.task}
-                    </span>
-                    <select
-                      className="border border-gray-300 rounded-lg p-2"
-                      onChange={(e) =>
-                        handleAssignTask(customer.id, e.target.value)
-                      }
-                    >
-                      <option value="">Assign to CA/CS</option>
-                      {dashboardData.cas.map((ca) => (
-                        <option key={ca.id} value={ca.id}>
-                          {ca.name}
-                        </option>
-                      ))}
-                    </select>
-                  </li>
-                ))}
-              </ul>
+    <div className="bg-[#FEFCE8] min-h-screen flex items-center justify-center px-4 py-10">
+      <div className="bg-white/30 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-2xl border border-[#10B981]/20">
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="bg-[#FF6F00]/10 p-4 rounded-full">
+              <FaBuilding className="text-3xl text-[#FF6F00]" />
             </div>
           </div>
+          <h2 className="text-3xl font-bold text-[#374151] font-poppins drop-shadow-md">
+            Company Portal
+          </h2>
+          <p className="text-[#374151] mt-2 font-inter">
+            {otpSent
+              ? "Verify your email address with OTP"
+              : "Enter your company email"}
+          </p>
+
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </div>
-      )}
+
+        <form
+          onSubmit={handleSubmit(otpSent ? handleVerifyOtp : handleSendMail)}
+          className="space-y-6"
+        >
+          <div className="space-y-4">
+            {!otpSent && (
+              <>
+                <Input
+                  label="Company Email"
+                  name="email"
+                  type="email"
+                  icon={<FaEnvelope className="text-[#FF6F00]" />}
+                  {...register("email", {
+                    required: "Email address is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address",
+                    },
+                  })}
+                  placeholder="Enter your company email"
+                  required
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-sm">
+                    {errors.email.message}
+                  </span>
+                )}
+              </>
+            )}
+
+            {otpSent && (
+              <>
+                <div className="mb-4">
+                  <p className="text-gray-600 font-medium mb-1">Email</p>
+                  <div className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <FaEnvelope className="text-[#FF6F00] mr-2" />
+                    <span>{email}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex-grow">
+                    <Input
+                      label="OTP Verification"
+                      name="otp"
+                      type="text"
+                      icon={<FaLock className="text-[#FF6F00]" />}
+                      placeholder="Enter 6-digit OTP"
+                      {...register("otp", {
+                        required: "OTP is required",
+                        pattern: {
+                          value: /^[0-9]{6}$/,
+                          message: "OTP should be 6 digits",
+                        },
+                      })}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className={`text-sm ${
+                      resendCountdown > 0
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-blue-500 hover:underline"
+                    } ml-2 whitespace-nowrap mt-6`}
+                    onClick={handleResendOtp}
+                    disabled={resendCountdown > 0 || loading}
+                  >
+                    {resendCountdown > 0
+                      ? `Resend OTP in ${resendCountdown}s`
+                      : "Resend OTP"}
+                  </button>
+                </div>
+                {errors.otp && (
+                  <span className="text-red-500 text-sm">
+                    {errors.otp.message}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full flex items-center justify-center"
+            disabled={loading}
+          >
+            {loading ? (
+              <img src={spinner} alt="Loading" className="w-5 h-5 mr-2" />
+            ) : otpSent ? (
+              <>
+                <FaCheckCircle className="mr-2" />
+                Verify OTP
+              </>
+            ) : (
+              <>Send OTP</>
+            )}
+          </Button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-gray-600">
+          <p>Secure login with OTP verification</p>
+        </div>
+      </div>
     </div>
   );
 };

@@ -7,8 +7,15 @@ import {
   ServicesPage,
   CompanyLoginPage,
   CacsPannelPage,
+  ProfessionalFillDetailsPage,
+  ProfessionalProfilePage,
+  ProfessionalWork,
+  CustomerFillDetailsPage,
+  CustomerHome,
+  CustomerProfile,
 } from "../pages";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
+import { AuthLayout } from "../components";
 
 export const router = createBrowserRouter([
   {
@@ -19,25 +26,99 @@ export const router = createBrowserRouter([
         path: "/",
         element: <HeroPage />,
       },
+      // customer route here
+      {
+        path: "/customer-login",
+        element: (
+          <AuthLayout authentication={false}>
+            <CustomerLoginPage />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/customer-fill-details",
+        element: (
+          <AuthLayout>
+            <CustomerFillDetailsPage />
+          </AuthLayout>
+        ),
+      },
+
+      // professional route here
       {
         path: "/professional-login",
-        element: <CaCsSignupPage />,
+        element: (
+          <AuthLayout authentication={false}>
+            <CaCsSignupPage />
+          </AuthLayout>
+        ),
       },
       {
-        path: "customer-login",
-        element: <CustomerLoginPage />,
+        path: "/customer-home",
+        element: (
+          <AuthLayout>
+            <CustomerHome />
+          </AuthLayout>
+        ),
       },
       {
-        path: "services",
-        element: <ServicesPage />,
+        path: "/customer-profile",
+        element: (
+          <AuthLayout>
+            <CustomerProfile />
+          </AuthLayout>
+        ),
+      },
+
+      {
+        path: "/professional/:username",
+        element: (
+          <AuthLayout>
+            <CacsPannelPage />
+          </AuthLayout>
+        ),
       },
       {
-        path: "company-login",
-        element: <CompanyLoginPage />,
+        path: "/professional-fill-details",
+        element: (
+          <AuthLayout>
+            <ProfessionalFillDetailsPage />
+          </AuthLayout>
+        ),
       },
       {
-        path: "professional/:username",
-        element: <CacsPannelPage />,
+        path: "/professional-panel",
+        element: (
+          <AuthLayout>
+            <CacsPannelPage />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/professional-profile",
+        element: (
+          <AuthLayout>
+            <ProfessionalProfilePage />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/professional/work/:customerId",
+        element: (
+          <AuthLayout>
+            <ProfessionalWork />
+          </AuthLayout>
+        ),
+      },
+
+      // company route here
+      {
+        path: "/company-login",
+        element: (
+          <AuthLayout authentication={false}>
+            <CompanyLoginPage />
+          </AuthLayout>
+        ),
       },
     ],
   },

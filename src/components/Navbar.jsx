@@ -1,10 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/features/authSlice";
+import professionalService from "../services/professionalService";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const authState = useSelector((state) => state.auth);
+  const userData = authState.userData;
+  const userRole = userData?.role;
+  const authStatus = authState.status;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  // Force re-render when auth state changes
+  useEffect(() => {
+    // This effect will run whenever authState changes
+    console.log("Auth state updated:", authStatus, userRole);
+  }, [authState, authStatus, userRole]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -14,21 +32,35 @@ function Navbar() {
     setIsMenuOpen(false);
   };
 
+  const handleLogout = () => {
+    professionalService.profLogout().then((res) => {
+      if (res.statusCode == 200) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("role");
+        toast.success("Logged out successfully.");
+        dispatch(logout());
+        navigate("/");
+        closeMenu();
+      }
+    });
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest("nav") && !event.target.closest("button")) {
-        closeMenu();
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        if (buttonRef.current && !buttonRef.current.contains(event.target)) {
+          closeMenu();
+        }
       }
     };
 
     if (isMenuOpen) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
-      document.removeEventListener("click", handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
 
@@ -37,9 +69,29 @@ function Navbar() {
     animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
+  // Links for unauthenticated users
+  const guestLinks = [
+    { to: "/professional-login", label: "CA/CS Login" },
+    { to: "/customer-login", label: "Customer Login" },
+    { to: "/company-login", label: "Company Login" },
+  ];
+
+  // Links for authenticated users
+  const authLinks = [
+    {
+      to:
+        userRole === "Professional"
+          ? "/professional-profile"
+          : userRole === "Customer"
+          ? "/customer-profile"
+          : "/company-profile",
+      label: "Profile",
+    },
+  ];
+
   return (
     <motion.header
-      className="bg-slate-900 py-4 px-6 shadow-lg sticky top-0 z-50"
+      className="bg-slate-900/90 py-4 px-6 shadow-lg sticky top-0 z-50"
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -49,12 +101,13 @@ function Navbar() {
           to="/"
           className="hover:text-[#10B981] hover:scale-105 transition-all duration-300"
         >
-          <h1 className="text-3xl font-bold text-[#D1D5DB] font-poppins">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent font-poppins">
             DropHeaven
           </h1>
         </Link>
         <motion.button
-          className="md:hidden text-[#10B981] focus:outline-none"
+          ref={buttonRef}
+          className="md:hidden text-[#10B981] focus:outline-none z-50"
           onClick={toggleMenu}
           aria-label="Toggle menu"
           whileTap={{ scale: 0.9 }}
@@ -66,34 +119,105 @@ function Navbar() {
           )}
         </motion.button>
         <nav
+          ref={menuRef}
           className={`${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
-          } md:translate-x-0 fixed md:static top-16 right-0 w-full md:w-auto h-[calc(100vh-80px)] md:h-auto bg-[#1F2937] backdrop-blur-md md:bg-transparent transition-transform duration-300 ease-in-out md:flex md:items-center md:space-x-8`}
+          } md:translate-x-0 fixed md:static inset-0 md:inset-auto top-16 right-0 w-full md:w-auto h-[calc(100vh-4rem)] md:h-auto bg-[#1F2937] md:bg-transparent transition-transform duration-300 ease-in-out md:flex md:items-center md:space-x-8 z-40`}
         >
           <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 p-6 md:p-0">
-            {[
-              { to: "/professional-login", label: "CA/CS Login" },
-              { to: "/customer-login", label: "Customer Login" },
-              { to: "/company-login", label: "Company Login" },
-            ].map((link, index) => (
-              <motion.div
-                key={link.to}
-                variants={linkVariants}
-                initial="initial"
-                animate={
-                  isMenuOpen || window.innerWidth >= 768 ? "animate" : "initial"
-                }
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link
-                  to={link.to}
-                  className="py-2 px-4 text-[#D1D5DB] hover:text-white hover:underline rounded-md transition-all font-inter"
-                  onClick={closeMenu}
+            {authStatus ? (
+              <>
+                {/* Dashboard link */}
+                <motion.div
+                  variants={linkVariants}
+                  initial="initial"
+                  animate={
+                    isMenuOpen || window.innerWidth >= 768
+                      ? "animate"
+                      : "initial"
+                  }
                 >
-                  {link.label}
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    to={
+                      userRole === "Professional"
+                        ? "/professional/dashboard"
+                        : userRole === "Customer"
+                        ? "/customer-home"
+                        : "/company/dashboard"
+                    }
+                    className="py-2 px-4 text-[#D1D5DB] hover:text-white hover:underline rounded-md transition-all font-inter"
+                    onClick={closeMenu}
+                  >
+                    Dashboard
+                  </Link>
+                </motion.div>
+
+                {/* Other authenticated links */}
+                {authLinks.map((link, index) => (
+                  <motion.div
+                    key={link.to}
+                    variants={linkVariants}
+                    initial="initial"
+                    animate={
+                      isMenuOpen || window.innerWidth >= 768
+                        ? "animate"
+                        : "initial"
+                    }
+                    transition={{ delay: (index + 1) * 0.1 }}
+                  >
+                    <Link
+                      to={link.to}
+                      className="py-2 px-4 text-[#D1D5DB] hover:text-white hover:underline rounded-md transition-all font-inter"
+                      onClick={closeMenu}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Logout button */}
+                <motion.div
+                  variants={linkVariants}
+                  initial="initial"
+                  animate={
+                    isMenuOpen || window.innerWidth >= 768
+                      ? "animate"
+                      : "initial"
+                  }
+                  transition={{ delay: (authLinks.length + 1) * 0.1 }}
+                >
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center py-2 px-4 text-[#D1D5DB] hover:text-red-400 hover:underline rounded-md transition-all font-inter"
+                  >
+                    <FaSignOutAlt className="mr-2" /> Logout
+                  </button>
+                </motion.div>
+              </>
+            ) : (
+              // Guest links
+              guestLinks.map((link, index) => (
+                <motion.div
+                  key={link.to}
+                  variants={linkVariants}
+                  initial="initial"
+                  animate={
+                    isMenuOpen || window.innerWidth >= 768
+                      ? "animate"
+                      : "initial"
+                  }
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link
+                    to={link.to}
+                    className="py-2 px-4 text-[#D1D5DB] hover:text-white hover:underline rounded-md transition-all font-inter"
+                    onClick={closeMenu}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))
+            )}
           </div>
         </nav>
       </div>
