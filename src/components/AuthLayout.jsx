@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
+import spinner from "/spinner.svg";
 
 function AuthLayout({ children, authentication = true }) {
   const navigate = useNavigate();
@@ -12,10 +13,12 @@ function AuthLayout({ children, authentication = true }) {
   useEffect(() => {
     // If auth status hasn't been determined yet (null/undefined), keep loading
     if (authStatus === null || authStatus === undefined) {
+      return;
     }
 
     // If authentication is required and user is not authenticated
     if (authentication && !authStatus) {
+      navigate("/");
       return;
     }
 
@@ -28,6 +31,8 @@ function AuthLayout({ children, authentication = true }) {
         navigate("/customer-home");
       } else if (userData?.role === "Company") {
         navigate("/company/dashboard");
+      } else {
+        navigate("/");
       }
       return;
     }
@@ -40,6 +45,8 @@ function AuthLayout({ children, authentication = true }) {
         navigate("/customer-home");
       } else if (userData?.role === "Company") {
         navigate("/company/dashboard");
+      } else {
+        navigate("/");
       }
       return;
     }
@@ -49,8 +56,9 @@ function AuthLayout({ children, authentication = true }) {
   }, [authentication, authStatus, userData, location.pathname, navigate]);
 
   return loader ? (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-center text-xl">Loading...</h1>
+    <div className="flex flex-col justify-center items-center h-screen">
+      <h1 className="text-center text-xl text-gray-800 ">Loading...</h1>
+      <img src={spinner} alt="Loading spinner" className="mt-4" />
     </div>
   ) : (
     <>{children}</>

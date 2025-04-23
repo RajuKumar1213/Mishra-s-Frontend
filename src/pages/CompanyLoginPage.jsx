@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import extractErrorMessage from "../utils/extractErrorMessage";
-import companyService from "../services/companyService";
+import companyService, { CompanyService } from "../services/companyService";
 import { useForm } from "react-hook-form";
 import spinner from "/spinner.svg";
 
@@ -58,43 +58,39 @@ const CompanyLogin = () => {
       otp: data.otp,
     };
 
-    companyService
-      .verifyCompanyOtp(payload)
-      .then((response) => {
-        if (response.statusCode === 200) {
-          const { accessToken, refreshToken } = response.data;
+    companyService.verifyCompanyOtp(payload).then((response) => {
+      if (response.statusCode === 200) {
+        const { accessToken, refreshToken } = response.data;
 
-          // Store tokens and role
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-          localStorage.setItem("role", "Company");
+        // Store tokens and role
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("role", "Company");
 
-          toast.success("OTP verified successfully!");
+        toast.success("OTP verified successfully!");
 
-          // Check if company details are complete
-          return companyService.getCompanyProfile();
-        }
-      })
-      .then((response) => {
-        if (response && response.statusCode === 200) {
-          const { company } = response.data;
-          if (company.phone !== "" && company.address !== "") {
-            // Navigate to the dashboard if details are complete
-            navigate("/company/dashboard");
-          } else {
-            // Navigate to the fill details page if not complete
-            navigate("fill-company-details");
-          }
-        }
-      })
-      .catch((error) => {
-        const message = extractErrorMessage(error);
-        setError(message);
-        toast.error(message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        // Check if company details are complete
+        companyService
+          .getCompanyDetails()
+          .then((response) => {
+            if (response.statusCode === 200) {
+              const { company } = response.data;
+              if (company.address && company.phone) {
+                navigate("/company/dashboard");
+              } else {
+                navigate("/company-fill-details", {
+                  state: { email: email },
+                });
+              }
+            }
+          })
+          .catch((error) => {
+            const message = extractErrorMessage(error);
+            setError(message);
+            toast.error(message);
+          });
+      }
+    });
   };
 
   const handleResendOtp = () => {

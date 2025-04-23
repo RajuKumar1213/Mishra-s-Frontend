@@ -81,7 +81,7 @@ const CustomerLogin = () => {
                 customer.address &&
                 customer.profilePicture
               ) {
-                navigate("/customer-profile");
+                navigate("/customer-home");
               } else {
                 navigate("/customer-fill-details", {
                   state: { email: email },

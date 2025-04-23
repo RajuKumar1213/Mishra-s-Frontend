@@ -13,7 +13,7 @@ import companyService from "./services/companyService";
 function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const authState = useSelector((state) => state.auth.authState);
+  const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ function App() {
 
   return !loading ? (
     <div className="min-h-screen box-border text-white">
-      <Navbar key={`${authState}-${userData?.role}`} />
+      <Navbar />
       <Toaster position="top-right" />
       <Outlet />
       <Footer />

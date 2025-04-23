@@ -9,20 +9,24 @@ import toast from "react-hot-toast";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const authState = useSelector((state) => state.auth);
-  const userData = authState.userData;
+  const authStatus = useSelector((state) => state.auth.status);
+  const userData = useSelector((state) => state.auth.userData);
   const userRole = userData?.role;
-  const authStatus = authState.status;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // Force re-render when auth state changes
+  console.log(userData, authStatus);
+
   useEffect(() => {
-    // This effect will run whenever authState changes
-    console.log("Auth state updated:", authStatus, userRole);
-  }, [authState, authStatus, userRole]);
+    console.log(
+      "🧠 Navbar re-rendered on authStatus or userData change",
+      authStatus,
+      userData
+    );
+  }, [authStatus, userData]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

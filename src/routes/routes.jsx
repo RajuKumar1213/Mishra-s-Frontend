@@ -4,7 +4,6 @@ import App from "../App";
 import {
   HeroPage,
   CaCsSignupPage,
-  ServicesPage,
   CompanyLoginPage,
   CacsPannelPage,
   ProfessionalFillDetailsPage,
@@ -13,6 +12,9 @@ import {
   CustomerFillDetailsPage,
   CustomerHome,
   CustomerProfile,
+  CompanyDashboard,
+  CompanyFillDetails,
+  CompanyProfile,
 } from "../pages";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
 import { AuthLayout } from "../components";
@@ -117,6 +119,30 @@ export const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={false}>
             <CompanyLoginPage />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/company/dashboard",
+        element: (
+          <AuthLayout>
+            <CompanyDashboard />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/company-fill-details",
+        element: (
+          <AuthLayout>
+            <CompanyFillDetails />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/company-profile",
+        element: (
+          <AuthLayout>
+            <CompanyProfile />
           </AuthLayout>
         ),
       },

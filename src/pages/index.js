@@ -10,6 +10,9 @@ import ProfessionalWork from "./ProfessionalWork";
 import CustomerFillDetailsPage from "./CustomerFillDetails";
 import CustomerHome from "./CustomerHome";
 import CustomerProfile from "./CustomerProfile";
+import CompanyDashboard from "./CompanyDashboard";
+import CompanyFillDetails from "./companyFillDetails";
+import CompanyProfile from "./CompanyProfile";
 
 export {
   CaCsSignupPage,
@@ -24,4 +27,7 @@ export {
   CustomerFillDetailsPage,
   CustomerHome,
   CustomerProfile,
+  CompanyDashboard,
+  CompanyFillDetails,
+  CompanyProfile,
 };
