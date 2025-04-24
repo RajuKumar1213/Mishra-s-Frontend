@@ -15,6 +15,9 @@ import {
   CompanyDashboard,
   CompanyFillDetails,
   CompanyProfile,
+  RequestService,
+  NotFoundPage,
+  GetStartedPage,
 } from "../pages";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
 import { AuthLayout } from "../components";
@@ -23,10 +26,15 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         path: "/",
         element: <HeroPage />,
+      },
+      {
+        path: "/get-started",
+        element: <GetStartedPage />,
       },
       // customer route here
       {
@@ -68,6 +76,14 @@ export const router = createBrowserRouter([
         element: (
           <AuthLayout>
             <CustomerProfile />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/request/service/:serviceId",
+        element: (
+          <AuthLayout>
+            <RequestService />
           </AuthLayout>
         ),
       },

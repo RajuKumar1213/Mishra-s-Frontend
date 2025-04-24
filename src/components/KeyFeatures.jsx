@@ -17,7 +17,7 @@ const KeyFeatures = () => {
 
   return (
     <motion.section
-      className="bg-gradient-to-b from-[#FEFCE8] to-[#10B981]/10 py-20 px-6"
+      className="bg-gradient-to-b from-[#FEFCE8] to-[#10B981]/10 py-12 px-4 md:px-6"
       variants={fadeIn}
       initial="initial"
       whileInView="animate"

@@ -1,25 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
-import {
-  FiUpload,
-  FiMessageSquare,
-  FiChevronDown,
-  FiChevronUp,
-  FiX,
-} from "react-icons/fi";
-import {
-  FaWhatsapp,
-  FaRegStar,
-  FaStar,
-  FaRegCheckCircle,
-  FaCheckCircle,
-} from "react-icons/fa";
+import { FiMessageSquare } from "react-icons/fi";
+import { FaWhatsapp, FaRegStar, FaStar } from "react-icons/fa";
 import { RiServiceLine } from "react-icons/ri";
-import { motion, AnimatePresence } from "framer-motion";
-import customerService from "../services/customerService";
 import toast from "react-hot-toast";
-import { Button, Input } from "../components";
+import { Button } from "../components";
+import ServicesList from "../components/ServicesList";
 
 const CustomerHome = () => {
   const [customerData, setCustomerData] = useState({
@@ -42,24 +29,6 @@ const CustomerHome = () => {
   });
   const [recommendedServices, setRecommendedServices] = useState([]);
   const navigate = useNavigate();
-
-  const services = {
-    "NGO Registration": [
-      { name: "Section 8 Registration", rating: 4.8, requests: 124 },
-      { name: "Society Registration", rating: 4.5, requests: 89 },
-      { name: "Trust Registration", rating: 4.7, requests: 112 },
-    ],
-    "Company Registration": [
-      { name: "Private Limited", rating: 4.9, requests: 215 },
-      { name: "OPC Pvt. Ltd", rating: 4.6, requests: 76 },
-      { name: "LLP Registration", rating: 4.7, requests: 132 },
-    ],
-    "Tax and Compliance": [
-      { name: "GST Registration", rating: 4.8, requests: 342 },
-      { name: "ITR Filing", rating: 4.6, requests: 287 },
-      { name: "12A 80G Registration", rating: 4.5, requests: 94 },
-    ],
-  };
 
   useEffect(() => {
     // Fetch customer data and recommended services
@@ -109,10 +78,6 @@ const CustomerHome = () => {
     } catch (error) {
       toast.error("Failed to submit service request");
     }
-  };
-
-  const toggleCategory = (category) => {
-    setActiveCategory(activeCategory === category ? null : category);
   };
 
   const renderStars = (rating) => {
@@ -266,219 +231,7 @@ const CustomerHome = () => {
             </div>
 
             {/* Services Content */}
-            {activeTab === "services" && (
-              <div className="mt-6">
-                {!selectedService ? (
-                  <div className="space-y-6">
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                      <div className="p-4 bg-gray-50">
-                        <h2 className="text-lg font-semibold text-gray-900">
-                          Browse Professional Services
-                        </h2>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Select a service to get started
-                        </p>
-                      </div>
-
-                      <div className="p-4 space-y-4">
-                        {Object.entries(services).map(([category, items]) => (
-                          <div
-                            key={category}
-                            className="border border-gray-200 rounded-lg overflow-hidden"
-                          >
-                            <button
-                              onClick={() => toggleCategory(category)}
-                              className="w-full p-4 text-left bg-white hover:bg-gray-50 transition-colors flex justify-between items-center"
-                            >
-                              <h3 className="font-semibold text-gray-800">
-                                {category}
-                              </h3>
-                              {activeCategory === category ? (
-                                <FiChevronUp className="text-gray-500" />
-                              ) : (
-                                <FiChevronDown className="text-gray-500" />
-                              )}
-                            </button>
-
-                            <AnimatePresence>
-                              {activeCategory === category && (
-                                <motion.div
-                                  initial={{ opacity: 0, height: 0 }}
-                                  animate={{ opacity: 1, height: "auto" }}
-                                  exit={{ opacity: 0, height: 0 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="overflow-hidden"
-                                >
-                                  <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {items.map((service, index) => (
-                                      <motion.div
-                                        key={index}
-                                        whileHover={{ y: -2 }}
-                                        onClick={() =>
-                                          setSelectedService(service.name)
-                                        }
-                                        className="p-4 border border-gray-200 rounded-lg hover:border-[#FF6F00]/50 hover:shadow-md cursor-pointer transition-all"
-                                      >
-                                        <div className="flex justify-between items-start">
-                                          <h4 className="font-medium text-gray-800">
-                                            {service.name}
-                                          </h4>
-                                          <div className="flex items-center text-sm text-gray-500">
-                                            <span className="mr-1">
-                                              {service.rating}
-                                            </span>
-                                            <FaStar className="text-yellow-400" />
-                                          </div>
-                                        </div>
-                                        <p className="text-sm text-gray-500 mt-2">
-                                          {service.requests}+ successful
-                                          requests
-                                        </p>
-                                        <div className="mt-3 flex justify-between items-center">
-                                          <span className="text-xs px-2 py-1 bg-[#FF6F00]/10 text-[#FF6F00] rounded-full">
-                                            Popular
-                                          </span>
-                                          <span className="text-sm font-medium text-[#FF6F00]">
-                                            Starting at ₹999
-                                          </span>
-                                        </div>
-                                      </motion.div>
-                                    ))}
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl shadow-md overflow-hidden"
-                  >
-                    <div className="p-6">
-                      <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-semibold text-gray-900">
-                          {selectedService}
-                        </h2>
-                        <button
-                          onClick={() => setSelectedService(null)}
-                          className="text-sm text-[#FF6F00] hover:text-[#E65C00] flex items-center"
-                        >
-                          <FiX className="mr-1" />
-                          Back to services
-                        </button>
-                      </div>
-
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="font-medium text-gray-700 mb-2">
-                            Service Description
-                          </h3>
-                          <p className="text-gray-600">
-                            Our professional team will handle all aspects of
-                            your {selectedService}
-                            with complete documentation support and expert
-                            guidance.
-                          </p>
-                        </div>
-
-                        <div>
-                          <h3 className="font-medium text-gray-700 mb-3">
-                            Additional Details
-                          </h3>
-                          <textarea
-                            value={serviceRequest.description}
-                            onChange={(e) =>
-                              setServiceRequest({
-                                ...serviceRequest,
-                                description: e.target.value,
-                              })
-                            }
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF6F00]/50 focus:border-transparent"
-                            placeholder="Describe your specific requirements..."
-                            rows={3}
-                          />
-                        </div>
-
-                        <div>
-                          <h3 className="font-medium text-gray-700 mb-3">
-                            Upload Required Documents
-                          </h3>
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                            <FiUpload className="mx-auto h-10 w-10 text-gray-400" />
-                            <p className="mt-2 text-sm text-gray-600">
-                              Drag and drop files here, or click to select files
-                            </p>
-                            <label className="mt-4 inline-block">
-                              <span className="sr-only">Choose files</span>
-                              <Input
-                                type="file"
-                                multiple
-                                onChange={handleFileUpload}
-                                className="block w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-md file:border-0
-                                  file:text-sm file:font-semibold
-                                  file:bg-[#FF6F00] file:text-white
-                                  hover:file:bg-[#E65C00]"
-                              />
-                            </label>
-                          </div>
-
-                          {uploadedFiles.length > 0 && (
-                            <div className="mt-4 space-y-2">
-                              <h4 className="text-sm font-medium text-gray-700">
-                                Selected files:
-                              </h4>
-                              <ul className="space-y-2">
-                                {uploadedFiles.map((file, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex items-center justify-between p-2 bg-gray-50 rounded"
-                                  >
-                                    <div className="flex items-center">
-                                      <FiUpload className="text-gray-500 mr-2" />
-                                      <span className="text-sm text-gray-600">
-                                        {file.name}
-                                      </span>
-                                    </div>
-                                    <button
-                                      onClick={() => removeFile(index)}
-                                      className="text-red-500 hover:text-red-700"
-                                    >
-                                      <FiX />
-                                    </button>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex justify-end space-x-3 pt-4">
-                          <Button
-                            variant="outline"
-                            onClick={() => setSelectedService(null)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleServiceRequest}
-                            disabled={uploadedFiles.length === 0}
-                          >
-                            Request Service
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            )}
+            {activeTab === "services" && <ServicesList />}
 
             {/* My Requests Content */}
             {activeTab === "requests" && (

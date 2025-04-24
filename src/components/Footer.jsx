@@ -10,8 +10,8 @@ import {
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 mt-auto">
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-900 text-gray-300 py-12 mt-auto text-center md:text-left">
+      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 ">
         {/* Company Info */}
         <div className="space-y-4">
           <h3 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
@@ -21,7 +21,7 @@ function Footer() {
             Professional tax and financial consulting services for businesses
             and individuals.
           </p>
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 justify-center md:justify-normal">
             <a
               href="#"
               className="text-gray-400 hover:text-cyan-400 transition-colors"
@@ -115,7 +115,7 @@ function Footer() {
               <FaMapMarkerAlt className="mt-1 text-cyan-400" />
               <p>123 Financial District, Mumbai, Maharashtra 400001</p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 justify-center md:justify-normal">
               <FaPhone className="text-cyan-400" />
               <a
                 href="tel:+911234567890"
@@ -124,7 +124,7 @@ function Footer() {
                 +91 12345 67890
               </a>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 justify-center md:justify-normal">
               <FaEnvelope className="text-cyan-400" />
               <a
                 href="mailto:info@droptax.com"

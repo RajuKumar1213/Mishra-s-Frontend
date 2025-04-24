@@ -13,6 +13,9 @@ import CustomerProfile from "./CustomerProfile";
 import CompanyDashboard from "./CompanyDashboard";
 import CompanyFillDetails from "./companyFillDetails";
 import CompanyProfile from "./CompanyProfile";
+import RequestService from "./RequestService";
+import NotFoundPage from "./NotFoundPage";
+import GetStartedPage from "./GetStartedPage";
 
 export {
   CaCsSignupPage,
@@ -30,4 +33,7 @@ export {
   CompanyDashboard,
   CompanyFillDetails,
   CompanyProfile,
+  RequestService,
+  NotFoundPage,
+  GetStartedPage,
 };

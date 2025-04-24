@@ -73,7 +73,7 @@ const Services = () => {
       <div className="max-w-7xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-200">
         <div className="text-center mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
-            Professional Services Portal
+            Professional Services Portal helo
           </h1>
           <p className="text-gray-500 mt-2">
             {selectedService
