@@ -1,41 +1,50 @@
 import { createBrowserRouter } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import App from "../App";
-
-import {
-  HeroPage,
-  CaCsSignupPage,
-  CompanyLoginPage,
-  CacsPannelPage,
-  ProfessionalFillDetailsPage,
-  ProfessionalProfilePage,
-  ProfessionalWork,
-  CustomerFillDetailsPage,
-  CustomerHome,
-  CustomerProfile,
-  CompanyDashboard,
-  CompanyFillDetails,
-  CompanyProfile,
-  RequestService,
-  NotFoundPage,
-  GetStartedPage,
-} from "../pages";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
 import { AuthLayout } from "../components";
+import PageLoader from "../components/PageLoader"; // make sure this exists!
+
+// Lazy Load Pages
+const HeroPage = lazy(() => import("../pages/HeroPage"));
+const CaCsSignupPage = lazy(() => import("../pages/CaCsSignupPage"));
+const CompanyLoginPage = lazy(() => import("../pages/CompanyLoginPage"));
+const CacsPannelPage = lazy(() => import("../pages/CacsPannelPage"));
+const ProfessionalFillDetailsPage = lazy(() =>
+  import("../pages/CompanyFillDetails")
+);
+const ProfessionalProfilePage = lazy(() =>
+  import("../pages/ProfessionalProfilePage")
+);
+const ProfessionalWork = lazy(() => import("../pages/ProfessionalWork"));
+const CustomerFillDetailsPage = lazy(() =>
+  import("../pages/CustomerFillDetails")
+);
+const CustomerHome = lazy(() => import("../pages/CustomerHome"));
+const CustomerProfile = lazy(() => import("../pages/CustomerProfile"));
+const CompanyDashboard = lazy(() => import("../pages/CompanyDashboard"));
+const CompanyFillDetails = lazy(() => import("../pages/CompanyFillDetails"));
+const CompanyProfile = lazy(() => import("../pages/CompanyProfile"));
+const RequestService = lazy(() => import("../pages/RequestService"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const GetStartedPage = lazy(() => import("../pages/GetStartedPage"));
+
+// Suspense Wrapper
+const withSuspense = (Component) => (
+  <Suspense fallback={<PageLoader />}>
+    <Component />
+  </Suspense>
+);
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <NotFoundPage />,
+    errorElement: withSuspense(NotFoundPage),
     children: [
-      {
-        path: "/",
-        element: <HeroPage />,
-      },
-      {
-        path: "/get-started",
-        element: <GetStartedPage />,
-      },
+      { path: "/", element: withSuspense(HeroPage) },
+      { path: "/get-started", element: withSuspense(GetStartedPage) },
+
       // customer route here
       {
         path: "/customer-login",
@@ -48,10 +57,20 @@ export const router = createBrowserRouter([
       {
         path: "/customer-fill-details",
         element: (
-          <AuthLayout>
-            <CustomerFillDetailsPage />
-          </AuthLayout>
+          <AuthLayout>{withSuspense(CustomerFillDetailsPage)}</AuthLayout>
         ),
+      },
+      {
+        path: "/customer-home",
+        element: <AuthLayout>{withSuspense(CustomerHome)}</AuthLayout>,
+      },
+      {
+        path: "/customer-profile",
+        element: <AuthLayout>{withSuspense(CustomerProfile)}</AuthLayout>,
+      },
+      {
+        path: "/request/service/:serviceId",
+        element: <AuthLayout>{withSuspense(RequestService)}</AuthLayout>,
       },
 
       // professional route here
@@ -59,74 +78,33 @@ export const router = createBrowserRouter([
         path: "/professional-login",
         element: (
           <AuthLayout authentication={false}>
-            <CaCsSignupPage />
+            {withSuspense(CaCsSignupPage)}
           </AuthLayout>
         ),
       },
-      {
-        path: "/customer-home",
-        element: (
-          <AuthLayout>
-            <CustomerHome />
-          </AuthLayout>
-        ),
-      },
-      {
-        path: "/customer-profile",
-        element: (
-          <AuthLayout>
-            <CustomerProfile />
-          </AuthLayout>
-        ),
-      },
-      {
-        path: "/request/service/:serviceId",
-        element: (
-          <AuthLayout>
-            <RequestService />
-          </AuthLayout>
-        ),
-      },
-
       {
         path: "/professional/:username",
-        element: (
-          <AuthLayout>
-            <CacsPannelPage />
-          </AuthLayout>
-        ),
+        element: <AuthLayout>{withSuspense(CacsPannelPage)}</AuthLayout>,
       },
       {
         path: "/professional-fill-details",
         element: (
-          <AuthLayout>
-            <ProfessionalFillDetailsPage />
-          </AuthLayout>
+          <AuthLayout>{withSuspense(ProfessionalFillDetailsPage)}</AuthLayout>
         ),
       },
       {
         path: "/professional-panel",
-        element: (
-          <AuthLayout>
-            <CacsPannelPage />
-          </AuthLayout>
-        ),
+        element: <AuthLayout>{withSuspense(CacsPannelPage)}</AuthLayout>,
       },
       {
         path: "/professional-profile",
         element: (
-          <AuthLayout>
-            <ProfessionalProfilePage />
-          </AuthLayout>
+          <AuthLayout>{withSuspense(ProfessionalProfilePage)}</AuthLayout>
         ),
       },
       {
         path: "/professional/work/:customerId",
-        element: (
-          <AuthLayout>
-            <ProfessionalWork />
-          </AuthLayout>
-        ),
+        element: <AuthLayout>{withSuspense(ProfessionalWork)}</AuthLayout>,
       },
 
       // company route here
@@ -134,33 +112,21 @@ export const router = createBrowserRouter([
         path: "/company-login",
         element: (
           <AuthLayout authentication={false}>
-            <CompanyLoginPage />
+            {withSuspense(CompanyLoginPage)}
           </AuthLayout>
         ),
       },
       {
         path: "/company/dashboard",
-        element: (
-          <AuthLayout>
-            <CompanyDashboard />
-          </AuthLayout>
-        ),
+        element: <AuthLayout>{withSuspense(CompanyDashboard)}</AuthLayout>,
       },
       {
         path: "/company-fill-details",
-        element: (
-          <AuthLayout>
-            <CompanyFillDetails />
-          </AuthLayout>
-        ),
+        element: <AuthLayout>{withSuspense(CompanyFillDetails)}</AuthLayout>,
       },
       {
         path: "/company-profile",
-        element: (
-          <AuthLayout>
-            <CompanyProfile />
-          </AuthLayout>
-        ),
+        element: <AuthLayout>{withSuspense(CompanyProfile)}</AuthLayout>,
       },
     ],
   },
