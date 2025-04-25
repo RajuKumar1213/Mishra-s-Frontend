@@ -16,6 +16,8 @@ import CompanyProfile from "./CompanyProfile";
 import RequestService from "./RequestService";
 import NotFoundPage from "./NotFoundPage";
 import GetStartedPage from "./GetStartedPage";
+import ServiceConfirmation from "./ServiceConfirmation";
+import TaskDetails from "./TaskDetails";
 
 export {
   CaCsSignupPage,
@@ -36,4 +38,6 @@ export {
   RequestService,
   NotFoundPage,
   GetStartedPage,
+  ServiceConfirmation,
+  TaskDetails,
 };

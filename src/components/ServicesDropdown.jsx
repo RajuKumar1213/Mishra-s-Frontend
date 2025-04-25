@@ -2,14 +2,12 @@ import React, { act, useEffect, useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import ServicesBox from "./ServicesBox";
 import serviceCatalogService from "../services/serviceCatalogService";
+import spinner from "/spinner.svg";
 
 function ServicesDropdown() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [serviceGroups, setServiceGroups] = useState([]);
-
-  console.log(activeCategory);
-
-  console.log();
+  const [loading, setLoading] = useState(false);
 
   // Toggle category dropdown
   const toggleCategory = (categoryName) => {
@@ -18,16 +16,17 @@ function ServicesDropdown() {
 
   // Fetching services grouped by category
   useEffect(() => {
+    setLoading(true);
     const fetchServices = async () => {
       try {
         const response = await serviceCatalogService.getAllServices();
         if (response.statusCode === 200) {
           setServiceGroups(response.data); // expecting array of { category, services }
-        } else {
-          console.error("Failed to fetch services.");
+          setLoading(false);
         }
       } catch (error) {
         console.error("API ERROR :: getAllServices", error);
+        setLoading(false);
       }
     };
 
@@ -55,8 +54,12 @@ function ServicesDropdown() {
           </button>
 
           {/* Show ServicesBox only if this category is active */}
-          {activeCategory === group.category && (
-            <ServicesBox services={group.services} />
+          {loading ? (
+            <img className="mx-auto" src={spinner} />
+          ) : (
+            activeCategory === group.category && (
+              <ServicesBox services={group.services} />
+            )
           )}
         </div>
       ))}

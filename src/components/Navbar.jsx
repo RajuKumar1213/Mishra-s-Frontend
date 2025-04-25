@@ -1,25 +1,72 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaTimes, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../redux/features/authSlice";
+import { logout, syncAuthState } from "../redux/features/authSlice";
 import professionalService from "../services/professionalService";
 import toast from "react-hot-toast";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const authStatus = useSelector((state) => state.auth.status);
-  const userData = useSelector((state) => state.auth.userData);
-  const userRole = userData?.role;
-  const location = useLocation();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  useEffect(() => {}, [authStatus, userData]);
+  // Get auth state from Redux with force re-render on change
+  const authStatus = useSelector((state) => state.auth.status);
+  const userData = useSelector((state) => state.auth.userData);
+  const userRole = userData?.role;
+
+  // Make sure component re-renders when auth state changes
+
+  console.log(
+    "Navbar rendering with auth status:",
+    useSelector((state) => state.auth.status)
+  );
+
+  // Force re-render when any Redux state changes
+  const forceUpdate = useCallback(() => {
+    console.log("Force update triggered");
+    setRenderKey(Date.now());
+  }, []);
+
+  const [renderKey, setRenderKey] = useState(Date.now());
+
+  // Force component to evaluate auth state on EVERY render
+  useEffect(() => {
+    console.log("Auth status in Navbar useEffect:", authStatus);
+    console.log("User data in Navbar useEffect:", userData);
+  });
+
+  // Check for auth status on mount and when location changes
+  // useEffect(() => {
+  //   // Force component to re-render when location changes
+  //   // This ensures we catch auth state changes after redirects
+  //   setForceUpdate((prev) => prev + 1);
+
+  //   // Close mobile menu when navigating
+  //   closeMenu();
+  // }, [location.pathname]);
+
+  // Add an effect to handle auth token validation
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const storedRole = localStorage.getItem("role");
+
+    // If we have a stored token but Redux doesn't show as authenticated,
+    // we could potentially restore the session here or handle inconsistencies
+
+    if (accessToken && !authStatus) {
+      console.log(
+        "Found token in localStorage but Redux auth is false - syncing state"
+      );
+      // Here you would dispatch an action like:
+      dispatch(syncAuthState({ token: accessToken, role: storedRole }));
+    }
+  }, [authStatus, dispatch]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -30,17 +77,29 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    professionalService.profLogout().then((res) => {
-      if (res.statusCode == 200) {
+    professionalService
+      .profLogout()
+      .then((res) => {
+        if (res.statusCode == 200) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("role");
+          toast.success("Logged out successfully.");
+          dispatch(logout());
+          navigate("/");
+          closeMenu();
+        }
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+        // Fallback logout in case API fails
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("role");
-        toast.success("Logged out successfully.");
         dispatch(logout());
         navigate("/");
-        closeMenu();
-      }
-    });
+        toast.success("Logged out successfully.");
+      });
   };
 
   useEffect(() => {
@@ -124,6 +183,16 @@ function Navbar() {
     },
   };
 
+  // Determine dashboard link based on role - with fallback
+  const dashboardLink =
+    userRole === "Professional"
+      ? "/professional/dashboard"
+      : userRole === "Customer"
+      ? "/customer-home"
+      : userRole === "Company"
+      ? "/company/dashboard"
+      : "/";
+
   return (
     <motion.header
       className="bg-gray-900/95 py-4 px-6 shadow-xl sticky top-0 z-50 backdrop-blur-sm"
@@ -165,33 +234,13 @@ function Navbar() {
                 className="relative"
               >
                 <Link
-                  to={
-                    userRole === "Professional"
-                      ? "/professional/dashboard"
-                      : userRole === "Customer"
-                      ? "/customer-home"
-                      : "/company/dashboard"
-                  }
+                  to={dashboardLink}
                   className={`flex items-center py-2 px-3 text-gray-300 hover:text-orange-400 rounded-md transition-all font-medium ${
-                    isActive(
-                      userRole === "Professional"
-                        ? "/professional/dashboard"
-                        : userRole === "Customer"
-                        ? "/customer-home"
-                        : "/company/dashboard"
-                    )
-                      ? "text-orange-400"
-                      : ""
+                    isActive(dashboardLink) ? "text-orange-400" : ""
                   }`}
                 >
                   Dashboard
-                  {isActive(
-                    userRole === "Professional"
-                      ? "/professional/dashboard"
-                      : userRole === "Customer"
-                      ? "/customer-home"
-                      : "/company/dashboard"
-                  ) && (
+                  {isActive(dashboardLink) && (
                     <motion.span
                       className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-400 rounded-full"
                       layoutId="activeIndicator"
@@ -281,34 +330,16 @@ function Navbar() {
                   <>
                     <motion.div variants={linkVariants} className="relative">
                       <Link
-                        to={
-                          userRole === "Professional"
-                            ? "/professional/dashboard"
-                            : userRole === "Customer"
-                            ? "/customer-home"
-                            : "/company/dashboard"
-                        }
+                        to={dashboardLink}
                         className={`flex items-center py-3 px-4 text-gray-300 hover:text-orange-400 rounded-lg transition-all font-medium ${
-                          isActive(
-                            userRole === "Professional"
-                              ? "/professional/dashboard"
-                              : userRole === "Customer"
-                              ? "/customer-home"
-                              : "/company/dashboard"
-                          )
+                          isActive(dashboardLink)
                             ? "text-orange-400 bg-gray-700"
                             : "hover:bg-gray-700"
                         }`}
                         onClick={closeMenu}
                       >
                         Dashboard
-                        {isActive(
-                          userRole === "Professional"
-                            ? "/professional/dashboard"
-                            : userRole === "Customer"
-                            ? "/customer-home"
-                            : "/company/dashboard"
-                        ) && (
+                        {isActive(dashboardLink) && (
                           <span className="absolute left-0 top-0 h-full w-1 bg-orange-400 rounded-r-full"></span>
                         )}
                       </Link>

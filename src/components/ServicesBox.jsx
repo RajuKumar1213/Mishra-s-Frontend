@@ -5,10 +5,6 @@ import { Link } from "react-router-dom";
 
 function ServicesBox({ services, activeCategory }) {
   const [selectedService, setSelectedService] = useState(null);
-  const [serviceRequest, setServiceRequest] = useState({
-    description: "",
-    documents: [],
-  });
 
   return (
     <div>

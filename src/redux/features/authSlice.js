@@ -39,8 +39,22 @@ const authSlice = createSlice({
       state.status = false;
       state.userData = null;
     },
+    syncAuthState: (state, action) => {
+      console.log(action.payload);
+      // If we have a token, set authenticated
+      if (action.payload?.token) {
+        state.status = true;
+        state.userData = {
+          role: action.payload.role,
+          // Add other user data here if available
+        };
+      } else {
+        state.status = false;
+        state.userData = null;
+      }
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, syncAuthState } = authSlice.actions;
 export default authSlice.reducer;

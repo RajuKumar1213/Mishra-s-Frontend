@@ -11,7 +11,7 @@ const CaCsSignupPage = lazy(() => import("../pages/CaCsSignupPage"));
 const CompanyLoginPage = lazy(() => import("../pages/CompanyLoginPage"));
 const CacsPannelPage = lazy(() => import("../pages/CacsPannelPage"));
 const ProfessionalFillDetailsPage = lazy(() =>
-  import("../pages/CompanyFillDetails")
+  import("../pages/ProfessionalFillDetailsPage")
 );
 const ProfessionalProfilePage = lazy(() =>
   import("../pages/ProfessionalProfilePage")
@@ -23,11 +23,13 @@ const CustomerFillDetailsPage = lazy(() =>
 const CustomerHome = lazy(() => import("../pages/CustomerHome"));
 const CustomerProfile = lazy(() => import("../pages/CustomerProfile"));
 const CompanyDashboard = lazy(() => import("../pages/CompanyDashboard"));
-const CompanyFillDetails = lazy(() => import("../pages/CompanyFillDetails"));
+const CompanyFillDetails = lazy(() => import("../pages/companyFillDetails"));
 const CompanyProfile = lazy(() => import("../pages/CompanyProfile"));
 const RequestService = lazy(() => import("../pages/RequestService"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 const GetStartedPage = lazy(() => import("../pages/GetStartedPage"));
+const ServiceConfirmation = lazy(() => import("../pages/ServiceConfirmation"));
+const TaskDetails = lazy(() => import("../pages/TaskDetails"));
 
 // Suspense Wrapper
 const withSuspense = (Component) => (
@@ -44,6 +46,11 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: withSuspense(HeroPage) },
       { path: "/get-started", element: withSuspense(GetStartedPage) },
+
+      {
+        path: "/confirmation",
+        element: <AuthLayout>{withSuspense(ServiceConfirmation)}</AuthLayout>,
+      },
 
       // customer route here
       {
@@ -65,12 +72,16 @@ export const router = createBrowserRouter([
         element: <AuthLayout>{withSuspense(CustomerHome)}</AuthLayout>,
       },
       {
+        path: "/customer-home/request/service/:serviceId",
+        element: <AuthLayout>{withSuspense(RequestService)}</AuthLayout>,
+      },
+      {
         path: "/customer-profile",
         element: <AuthLayout>{withSuspense(CustomerProfile)}</AuthLayout>,
       },
       {
-        path: "/request/service/:serviceId",
-        element: <AuthLayout>{withSuspense(RequestService)}</AuthLayout>,
+        path: "/customer-home/details/:taskId",
+        element: <AuthLayout>{withSuspense(TaskDetails)}</AuthLayout>,
       },
 
       // professional route here

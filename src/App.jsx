@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { login, logout } from "./redux/features/authSlice";
+import { login, logout, syncAuthState } from "./redux/features/authSlice";
 import { Outlet } from "react-router-dom";
 import { Container, Footer, Navbar } from "./components";
 import { Toaster } from "react-hot-toast";
@@ -47,6 +47,15 @@ function App() {
     } else {
       dispatch(logout());
       setLoading(false);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const role = localStorage.getItem("role");
+
+    if (token) {
+      dispatch(syncAuthState({ token, role }));
     }
   }, [dispatch]);
 

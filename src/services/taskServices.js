@@ -3,16 +3,25 @@ import api from "../utils/api.js";
 export class TaskService {
   async createTask(data) {
     try {
-      const response = await api.post("/task/create", data);
+      const response = await api.post("/task/new", data);
       return response.data;
     } catch (error) {
       this._handleError("creating task", error);
     }
   }
 
-  async getCustomerTasks() {
+  async getCustomerTaskById(taskId) {
     try {
-      const response = await api.get("/task/customer");
+      const response = await api.get(`/task/customer/${taskId}`);
+      return response.data;
+    } catch (error) {
+      this._handleError("getting customer tasks", error);
+    }
+  }
+
+  async getCustomerAllTasks() {
+    try {
+      const response = await api.get(`/task/customer`);
       return response.data;
     } catch (error) {
       this._handleError("getting customer tasks", error);

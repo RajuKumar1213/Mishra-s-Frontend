@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { FiMessageSquare } from "react-icons/fi";
-import { FaWhatsapp, FaRegStar, FaStar } from "react-icons/fa";
-import { RiServiceLine } from "react-icons/ri";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { Button } from "../components";
 import ServicesList from "../components/ServicesList";
+import MyRequest from "../components/MyRequests";
+import { useSelector } from "react-redux";
+import CustomerTaskHistory from "../components/CustomerTaskHistory";
 
 const CustomerHome = () => {
   const [customerData, setCustomerData] = useState({
@@ -19,9 +21,9 @@ const CustomerHome = () => {
     profilePicture:
       "https://res.cloudinary.com/dykqvsfd1/image/upload/v1745212097/zypdgohz4eqoe9iqm1xt.jpg",
   });
+  const userData = useSelector((state) => state.auth.userData);
   const [selectedService, setSelectedService] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(null);
   const [activeTab, setActiveTab] = useState("services");
   const [serviceRequest, setServiceRequest] = useState({
     description: "",
@@ -98,31 +100,6 @@ const CustomerHome = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">
-            <span className="bg-gradient-to-r from-[#FF6F00] to-[#FF8F00] bg-clip-text text-transparent">
-              DropHeaven
-            </span>
-          </h1>
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 text-gray-700 hover:text-[#FF6F00]">
-              <FiMessageSquare className="w-5 h-5" />
-              <span>Support</span>
-            </button>
-            <div className="flex items-center space-x-2">
-              <img
-                src={customerData.profilePicture}
-                alt="Profile"
-                className="w-8 h-8 rounded-full object-cover"
-              />
-              <span className="font-medium">{customerData.name}</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Profile Sidebar */}
@@ -131,13 +108,17 @@ const CustomerHome = () => {
               <div className="bg-gradient-to-r from-[#FF6F00] to-[#FF8F00] p-4 text-white text-center">
                 <div className="relative mx-auto w-24 h-24 rounded-full border-4 border-white mb-4 overflow-hidden">
                   <img
-                    src={customerData.profilePicture}
-                    alt={customerData.name}
+                    src={userData?.customer?.profilePicture}
+                    alt="profile picture"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h2 className="text-xl font-bold">{customerData.name}</h2>
-                <p className="text-sm opacity-90">{customerData.email}</p>
+                <h2 className="text-xl font-bold">
+                  {userData?.customer?.name}
+                </h2>
+                <p className="text-sm opacity-90">
+                  {userData?.customer?.email}
+                </p>
               </div>
 
               <div className="p-6 space-y-4">
@@ -145,7 +126,9 @@ const CustomerHome = () => {
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Contact
                   </h3>
-                  <p className="mt-1 text-gray-700">{customerData.phone}</p>
+                  <p className="mt-1 text-gray-700">
+                    {userData?.customer?.phone}
+                  </p>
                 </div>
 
                 <div>
@@ -153,8 +136,8 @@ const CustomerHome = () => {
                     Address
                   </h3>
                   <p className="mt-1 text-gray-700">
-                    {customerData.address}, {customerData.state} -{" "}
-                    {customerData.pinCode}
+                    {userData?.customer?.address}, {userData?.customer?.state} -{" "}
+                    {userData?.customer?.pinCode}
                   </p>
                 </div>
 
@@ -162,7 +145,7 @@ const CustomerHome = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => navigate("/customer-edit-profile")}
+                    onClick={() => navigate("/customer-profile")}
                   >
                     Edit Profile
                   </Button>
@@ -171,7 +154,7 @@ const CustomerHome = () => {
             </div>
 
             {/* Recommended Services */}
-            <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
+            {/* <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="font-semibold text-gray-900 flex items-center">
                   <RiServiceLine className="mr-2 text-[#FF6F00]" />
@@ -193,7 +176,7 @@ const CustomerHome = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Main Content */}
@@ -236,105 +219,15 @@ const CustomerHome = () => {
             {activeTab === "services" && <ServicesList />}
 
             {/* My Requests Content */}
-            {activeTab === "requests" && (
-              <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Your Active Requests
-                </h2>
-                <div className="space-y-4">
-                  <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium text-gray-800">
-                          GST Registration
-                        </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Requested on April 15, 2023
-                        </p>
-                      </div>
-                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
-                        In Progress
-                      </span>
-                    </div>
-                    <div className="mt-3 flex items-center text-sm text-gray-500">
-                      <span className="mr-2">Assigned to:</span>
-                      <div className="flex items-center">
-                        <img
-                          src="https://randomuser.me/api/portraits/men/32.jpg"
-                          alt="Professional"
-                          className="w-6 h-6 rounded-full mr-2"
-                        />
-                        <span>CA Ramesh Kumar</span>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex space-x-3">
-                      <button className="text-sm text-[#FF6F00] hover:text-[#E65C00] flex items-center">
-                        <FiMessageSquare className="mr-1" />
-                        Message
-                      </button>
-                      <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-                        <RiServiceLine className="mr-1" />
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {activeTab === "requests" && <MyRequest />}
 
             {/* History Content */}
-            {activeTab === "history" && (
-              <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Service History
-                </h2>
-                <div className="space-y-4">
-                  <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium text-gray-800">
-                          Private Limited Company Registration
-                        </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Completed on March 28, 2023
-                        </p>
-                      </div>
-                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                        Completed
-                      </span>
-                    </div>
-                    <div className="mt-3 flex items-center">
-                      <div className="flex mr-2">{renderStars(5)}</div>
-                      <span className="text-sm text-gray-500">
-                        Your rating: 5/5
-                      </span>
-                    </div>
-                    <div className="mt-3">
-                      <button className="text-sm text-[#FF6F00] hover:text-[#E65C00] flex items-center">
-                        <RiServiceLine className="mr-1" />
-                        View Documents
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {activeTab === "history" && <CustomerTaskHistory />}
           </div>
         </div>
       </main>
 
       {/* WhatsApp Floating Button */}
-      <div className="fixed bottom-6 right-6">
-        <a
-          href="https://wa.me/1234567890"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all flex items-center justify-center"
-          aria-label="Chat on WhatsApp"
-        >
-          <FaWhatsapp className="w-6 h-6" />
-        </a>
-      </div>
     </div>
   );
 };
