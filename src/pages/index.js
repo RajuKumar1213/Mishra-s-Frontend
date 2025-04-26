@@ -11,7 +11,7 @@ import CustomerFillDetailsPage from "./CustomerFillDetails";
 import CustomerHome from "./CustomerHome";
 import CustomerProfile from "./CustomerProfile";
 import CompanyDashboard from "./CompanyDashboard";
-import CompanyFillDetails from "./companyFillDetails";
+import CompanyFillDetails from "./CustomerFillDetails";
 import CompanyProfile from "./CompanyProfile";
 import RequestService from "./RequestService";
 import NotFoundPage from "./NotFoundPage";
@@ -33,11 +33,11 @@ export {
   CustomerHome,
   CustomerProfile,
   CompanyDashboard,
-  CompanyFillDetails,
   CompanyProfile,
   RequestService,
   NotFoundPage,
   GetStartedPage,
   ServiceConfirmation,
   TaskDetails,
+  CompanyFillDetails,
 };

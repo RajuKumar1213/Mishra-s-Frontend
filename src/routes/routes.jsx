@@ -23,7 +23,7 @@ const CustomerFillDetailsPage = lazy(() =>
 const CustomerHome = lazy(() => import("../pages/CustomerHome"));
 const CustomerProfile = lazy(() => import("../pages/CustomerProfile"));
 const CompanyDashboard = lazy(() => import("../pages/CompanyDashboard"));
-const CompanyFillDetails = lazy(() => import("../pages/companyFillDetails"));
+const CompanyFillDetails = lazy(() => import("../pages/CompanyFillDetails"));
 const CompanyProfile = lazy(() => import("../pages/CompanyProfile"));
 const RequestService = lazy(() => import("../pages/RequestService"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
