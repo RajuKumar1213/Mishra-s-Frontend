@@ -62,7 +62,7 @@ function App() {
   return !loading ? (
     <div className="min-h-screen box-border text-white">
       <Navbar />
-      <Toaster position="top-right" />
+      <Toaster position="top-center" reverseOrder={false} />
       <Outlet />
       <Footer />
     </div>

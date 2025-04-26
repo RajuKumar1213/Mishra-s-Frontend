@@ -84,6 +84,7 @@ function Navbar() {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("role");
+          sessionStorage.removeItem("reloaded");
           toast.success("Logged out successfully.");
           dispatch(logout());
           navigate("/");

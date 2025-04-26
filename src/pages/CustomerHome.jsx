@@ -33,6 +33,13 @@ const CustomerHome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!sessionStorage.getItem("reloaded")) {
+      sessionStorage.setItem("reloaded", "true");
+      window.location.reload();
+    }
+  }, []);
+
+  useEffect(() => {
     // Fetch customer data and recommended services
     window.scroll(0, 0);
 

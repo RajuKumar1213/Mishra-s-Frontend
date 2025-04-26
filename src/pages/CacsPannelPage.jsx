@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaUserTie,
   FaEnvelope,
@@ -62,6 +62,13 @@ const CacsPannelPage = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("reloaded")) {
+      sessionStorage.setItem("reloaded", "true");
+      window.location.reload();
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">

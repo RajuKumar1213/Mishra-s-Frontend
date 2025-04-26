@@ -30,6 +30,13 @@ const CompanyDashboard = () => {
   const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
+    if (!sessionStorage.getItem("reloaded")) {
+      sessionStorage.setItem("reloaded", "true");
+      window.location.reload();
+    }
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
     taskService
       .getCompanyTasks()
