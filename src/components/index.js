@@ -9,6 +9,8 @@ import AuthLayout from "./AuthLayout";
 import KeyFeatures from "./KeyFeatures";
 import Services from "./Services";
 import CustomerLogin from "./CustomerLogin";
+import ViewAllAssigned from "./viewAllAssigned";
+import PageLoader from "./PageLoader";
 
 export {
   Button,
@@ -22,4 +24,6 @@ export {
   Services,
   AuthLayout,
   CustomerLogin,
+  ViewAllAssigned,
+  PageLoader,
 };

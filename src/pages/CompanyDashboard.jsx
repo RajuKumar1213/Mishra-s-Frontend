@@ -15,8 +15,8 @@ import { motion } from "framer-motion";
 import companyService from "../services/companyService";
 import taskService from "../services/taskServices";
 import toast from "react-hot-toast";
-import ViewAllAssigned from "../components/viewAllAssigned";
 import spinner from "/spinner.svg";
+import { ViewAllAssigned } from "../components";
 
 const CompanyDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");

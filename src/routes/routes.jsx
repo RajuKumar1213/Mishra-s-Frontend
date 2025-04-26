@@ -2,8 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import App from "../App";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
-import { AuthLayout } from "../components";
-import PageLoader from "../components/PageLoader"; // make sure this exists!
+import { AuthLayout, PageLoader } from "../components";
 
 // Lazy Load Pages
 const HeroPage = lazy(() => import("../pages/HeroPage"));
