@@ -9,7 +9,7 @@ import AuthLayout from "./AuthLayout";
 import KeyFeatures from "./KeyFeatures";
 import Services from "./Services";
 import CustomerLogin from "./CustomerLogin";
-import ViewAllAssigned from "./viewAllAssigned";
+import ViewAllAssigned from "./ViewAllAssigned";
 import PageLoader from "./PageLoader";
 
 export {
