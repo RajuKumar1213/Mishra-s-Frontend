@@ -52,6 +52,32 @@ export class CompanyService {
       throw error.response?.data || "Failed to get company details.";
     }
   }
+
+  async getAllProfessionals() {
+    try {
+      const response = await api.get("/company/fetch-all-professionals");
+      return response.data;
+    } catch (error) {
+      console.error(
+        "ERROR :: getting company details::",
+        error.response?.data || error.message
+      );
+      throw error.response?.data || "Failed to get company details.";
+    }
+  }
+
+  async getAllTasksAfterAssigned() {
+    try {
+      const response = await api.get("/company/fetch-all-assigned-tasks");
+      return response.data;
+    } catch (error) {
+      console.error(
+        "ERROR :: fetchig all assigned tasks ::",
+        error.response?.data || error.message
+      );
+      throw error.response?.data || "Failed to get company details.";
+    }
+  }
 }
 
 const companyService = new CompanyService();

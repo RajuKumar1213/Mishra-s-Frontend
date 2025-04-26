@@ -64,9 +64,17 @@ export class TaskService {
     }
   }
 
-  async companyAssignTaskToProfessional(assignData) {
+  async companyAssignTaskToProfessional(
+    taskId,
+    professionalId,
+    message = "Do the task as before as you can."
+  ) {
     try {
-      const response = await api.post("/task/company/assign", assignData);
+      console.log(taskId, professionalId, message);
+      const response = await api.post(`/task/company/${taskId}/assign`, {
+        professionalId,
+        message,
+      });
       return response.data;
     } catch (error) {
       this._handleError("assigning task to professional", error);

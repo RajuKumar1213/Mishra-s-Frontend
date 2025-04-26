@@ -12,115 +12,102 @@ import { RiDashboardFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { motion } from "framer-motion";
+import companyService from "../services/companyService";
+import taskService from "../services/taskServices";
+import toast from "react-hot-toast";
+import ViewAllAssigned from "../components/viewAllAssigned";
+import spinner from "/spinner.svg";
 
 const CompanyDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [searchTerm, setSearchTerm] = useState("");
-  const [assignedTasks, setAssignedTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [viewAll, setViewAll] = useState(false);
 
   // Sample data - replace with API calls
-  const [professionals, setProfessionals] = useState([
-    {
-      id: 1,
-      name: "CA Ramesh Kumar",
-      specialization: "Taxation",
-      rating: 4.8,
-      experience: "5 years",
-      availability: "Available",
-      tasksCompleted: 42,
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
-    },
-    {
-      id: 2,
-      name: "CS Priya Sharma",
-      specialization: "Company Law",
-      rating: 4.6,
-      experience: "3 years",
-      availability: "Available",
-      tasksCompleted: 28,
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
-    },
-    {
-      id: 3,
-      name: "CA Amit Patel",
-      specialization: "Auditing",
-      rating: 4.9,
-      experience: "7 years",
-      availability: "On Leave",
-      tasksCompleted: 67,
-      image: "https://randomuser.me/api/portraits/men/75.jpg",
-    },
-  ]);
+  const [professionals, setProfessionals] = useState([]);
 
-  const [customers, setCustomers] = useState([
-    {
-      id: 1,
-      name: "Rajiv Sharma",
-      task: "GST Registration",
-      status: "Pending",
-      deadline: "2023-06-15",
-      documents: 3,
-      image: "https://randomuser.me/api/portraits/men/22.jpg",
-    },
-    {
-      id: 2,
-      name: "Neha Gupta",
-      task: "Company Incorporation",
-      status: "In Progress",
-      deadline: "2023-06-20",
-      documents: 5,
-      image: "https://randomuser.me/api/portraits/women/33.jpg",
-    },
-    {
-      id: 3,
-      name: "Amit Singh",
-      task: "Tax Filing",
-      status: "New",
-      deadline: "2023-07-05",
-      documents: 2,
-      image: "https://randomuser.me/api/portraits/men/55.jpg",
-    },
-  ]);
+  const [customers, setCustomers] = useState([]);
 
-  const handleAssignTask = (customerId, professionalId) => {
-    const customer = customers.find((c) => c.id === customerId);
-    const professional = professionals.find((p) => p.id === professionalId);
+  useEffect(() => {
+    setLoading(true);
+    taskService
+      .getCompanyTasks()
+      .then((response) => {
+        if (response.statusCode === 200) {
+          setCustomers(response.data.tasks);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching customers:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    companyService
+      .getAllProfessionals()
+      .then((response) => {
+        if (response.statusCode === 200) {
+          setProfessionals(response.data);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching professionals:", error);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  // fetching recent tasks.
+
+  const handleAssignTask = (taskId, professionalId) => {
+    setLoading(true);
+    const customer = customers.find((c) => c._id === taskId);
+    const professional = professionals.find((p) => p._id === professionalId);
 
     if (customer && professional) {
-      setAssignedTasks((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          customerName: customer.name,
-          professionalName: professional.name,
-          task: customer.task,
-          date: new Date().toISOString().split("T")[0],
-          status: "Assigned",
-        },
-      ]);
-
-      // Update customer status
-      setCustomers(
-        customers.map((c) =>
-          c.id === customerId ? { ...c, status: "Assigned" } : c
-        )
-      );
-
-      toast.success(`Assigned ${customer.task} to ${professional.name}`);
+      // making api call
+      taskService
+        .companyAssignTaskToProfessional(taskId, professionalId)
+        .then((response) => {
+          if (response.statusCode === 200) {
+            console.log(response.data);
+            // Update customer status
+            toast.success(`Assigned ${customer.name} to ${professional.name}`);
+            setLoading(false);
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          console.error("Error assigning task:", error);
+          setLoading(false);
+          toast.error("Error assigning task");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   };
 
-  const filteredProfessionals = professionals.filter(
+  const filteredProfessionals = professionals?.filter(
     (pro) =>
-      pro.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pro.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+      pro?.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
+      pro?.specialization?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredCustomers = customers.filter(
-    (customer) =>
-      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.task.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredCustomers = customers?.filter(
+  //   (customer) =>
+  //     customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     customer?.task?.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
@@ -291,114 +278,92 @@ const CompanyDashboard = () => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold">Recent Assignments</h2>
-                  <button className="text-sm text-[#FF6F00] hover:text-[#E65C00]">
-                    View All
+                  <button
+                    onClick={() => setViewAll(!viewAll)}
+                    className="text-sm text-[#FF6F00] hover:text-[#E65C00] cursor-pointer"
+                  >
+                    {viewAll ? "View Less" : "View All"}
                   </button>
                 </div>
-                <div className="space-y-4">
-                  {assignedTasks.slice(0, 5).map((task) => (
-                    <div
-                      key={task.id}
-                      className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:shadow-sm transition-shadow"
-                    >
-                      <div>
-                        <p className="font-medium">{task.task}</p>
-                        <p className="text-sm text-gray-500">
-                          {task.customerName} → {task.professionalName}
-                        </p>
-                      </div>
-                      <div className="flex items-center">
-                        <span
-                          className={`px-3 py-1 text-xs rounded-full ${
-                            task.status === "Assigned"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : task.status === "Completed"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {task.status}
-                        </span>
-                        <span className="ml-4 text-sm text-gray-500">
-                          {task.date}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {viewAll ? (
+                  <ViewAllAssigned viewAll={viewAll} />
+                ) : (
+                  <ViewAllAssigned viewAll={viewAll} />
+                )}
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <h2 className="text-lg font-semibold mb-4">Quick Assign</h2>
-                  <div className="space-y-4">
-                    {customers.slice(0, 3).map((customer) => (
-                      <div
-                        key={customer.id}
-                        className="flex items-center justify-between p-3 border border-gray-100 rounded-lg"
-                      >
-                        <div className="flex items-center">
-                          <img
-                            src={customer.image}
-                            alt={customer.name}
-                            className="w-10 h-10 rounded-full mr-3"
-                          />
-                          <div>
-                            <p className="font-medium">{customer.name}</p>
-                            <p className="text-sm text-gray-500">
-                              {customer.task}
-                            </p>
-                          </div>
-                        </div>
-                        <select
-                          className="text-sm border border-gray-200 rounded-md px-3 py-1 focus:ring-[#FF6F00] focus:border-[#FF6F00]"
-                          onChange={(e) =>
-                            handleAssignTask(
-                              customer.id,
-                              parseInt(e.target.value)
-                            )
-                          }
-                          defaultValue=""
-                        >
-                          <option value="" disabled>
-                            Assign to
-                          </option>
-                          {professionals
-                            .filter((p) => p.availability === "Available")
-                            .map((pro) => (
-                              <option key={pro.id} value={pro.id}>
-                                {pro.name}
+              {!viewAll && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h2 className="text-lg font-semibold mb-4">Quick Assign</h2>
+                    <div className="space-y-4">
+                      {customers?.length === 0 ? (
+                        <h3 className="font-thin text-md text-gray-500">
+                          No new task yet to assign.{" "}
+                        </h3>
+                      ) : (
+                        customers?.map((customer) => (
+                          <div
+                            key={customer._id}
+                            className="flex items-center justify-between p-3 border border-gray-100 rounded-lg"
+                          >
+                            <div className="flex items-center">
+                              <img
+                                src={customer?.customerProfile}
+                                alt={customer?.customerName}
+                                className="w-10 h-10 rounded-full mr-3"
+                              />
+                              <div>
+                                <p className="font-medium">
+                                  {customer?.customerName}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {customer?.serviceName}
+                                </p>
+                              </div>
+                            </div>
+                            <select
+                              className="text-sm border border-gray-200 rounded-md px-3 py-1 focus:ring-[#FF6F00] focus:border-[#FF6F00]"
+                              onChange={(e) =>
+                                handleAssignTask(customer._id, e.target.value)
+                              }
+                              defaultValue=""
+                            >
+                              <option value="" disabled>
+                                Assign to
                               </option>
-                            ))}
-                        </select>
-                      </div>
-                    ))}
+                              {professionals?.map((pro) => (
+                                <option key={pro._id} value={pro._id}>
+                                  {pro.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <h2 className="text-lg font-semibold mb-4">
-                    Available Professionals
-                  </h2>
-                  <div className="space-y-4">
-                    {professionals
-                      .filter((p) => p.availability === "Available")
-                      .slice(0, 3)
-                      .map((pro) => (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h2 className="text-lg font-semibold mb-4">
+                      Available Professionals
+                    </h2>
+                    <div className="space-y-4">
+                      {professionals?.map((pro) => (
                         <div
-                          key={pro.id}
+                          key={pro._id}
                           className="flex items-center p-3 border border-gray-100 rounded-lg"
                         >
                           <img
-                            src={pro.image}
+                            src={pro.profilePicture}
                             alt={pro.name}
-                            className="w-10 h-10 rounded-full mr-3"
+                            className="w-10 h-10 rounded-full mr-3 object-cover"
                           />
                           <div className="flex-1">
                             <p className="font-medium">{pro.name}</p>
                             <p className="text-sm text-gray-500">
-                              {pro.specialization}
+                              {pro.role} - {pro.specialization}
                             </p>
                           </div>
                           <div className="flex items-center text-sm">
@@ -407,9 +372,10 @@ const CompanyDashboard = () => {
                           </div>
                         </div>
                       ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           )}
 
@@ -449,18 +415,18 @@ const CompanyDashboard = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {filteredProfessionals.map((pro) => (
-                        <tr key={pro.id} className="hover:bg-gray-50">
+                        <tr key={pro._id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <img
-                                className="w-10 h-10 rounded-full mr-3"
-                                src={pro.image}
+                                className="w-10 h-10 rounded-full mr-3 object-cover"
+                                src={pro.profilePicture}
                                 alt={pro.name}
                               />
                               <div>
                                 <div className="font-medium">{pro.name}</div>
                                 <div className="text-sm text-gray-500">
-                                  {pro.experience} experience
+                                  {pro.experience} year experience
                                 </div>
                               </div>
                             </div>
@@ -472,31 +438,31 @@ const CompanyDashboard = () => {
                             <div className="flex items-center">
                               <span className="text-yellow-500 mr-1">★</span>
                               <span>{pro.rating}</span>
-                              <span className="text-gray-400 ml-1">
+                              {/* <span className="text-gray-400 ml-1">
                                 ({pro.tasksCompleted})
-                              </span>
+                              </span> */}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span
                               className={`px-2 py-1 text-xs rounded-full ${
-                                pro.availability === "Available"
+                                "Available" === "Available"
                                   ? "bg-green-100 text-green-800"
-                                  : pro.availability === "On Leave"
+                                  : "Available" === "On Leave"
                                   ? "bg-red-100 text-red-800"
                                   : "bg-gray-100 text-gray-800"
                               }`}
                             >
-                              {pro.availability}
+                              {"Availabe"}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button className="text-[#FF6F00] hover:text-[#E65C00] mr-3">
                               View
                             </button>
-                            <button className="text-gray-500 hover:text-gray-700">
+                            {/* <button className="text-gray-500 hover:text-gray-700">
                               <BsThreeDotsVertical />
-                            </button>
+                            </button> */}
                           </td>
                         </tr>
                       ))}
@@ -585,7 +551,7 @@ const CompanyDashboard = () => {
                           <option value="" disabled>
                             Assign to
                           </option>
-                          {professionals.map((pro) => (
+                          {professionals?.map((pro) => (
                             <option key={pro.id} value={pro.id}>
                               {pro.name}
                             </option>

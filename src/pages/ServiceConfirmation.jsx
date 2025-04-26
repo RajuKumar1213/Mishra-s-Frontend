@@ -144,7 +144,7 @@ function ServiceConfirmation() {
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Full Name</p>
-                  <p className="font-medium">{userData.customer.name}</p>
+                  <p className="font-medium">{userData?.customer?.name}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Email Address</p>
