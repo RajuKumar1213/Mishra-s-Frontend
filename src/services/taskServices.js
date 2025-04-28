@@ -90,15 +90,16 @@ export class TaskService {
     }
   }
 
-  async professionalUpdateTask(taskId, newStatus, message="Your documents are being viewed by the professional.") {
+  async professionalUpdateTask(
+    taskId,
+    newStatus,
+    message = "Your documents are being viewed by the professional."
+  ) {
     try {
-      const {}
-      const response = await api.post(
-        `/task/professional/${taskId}/update`,
-        {
-          
-        }
-      );
+      const response = await api.post(`/task/professional/${taskId}/update`, {
+        newStatus,
+        message,
+      });
       return response.data;
     } catch (error) {
       this._handleError("professional updating task", error);
