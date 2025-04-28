@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const GetStartedPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-orange-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -21,82 +25,87 @@ const GetStartedPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* CA/CS Button */}
-            <button className="group relative flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-orange-50 border-2 border-transparent hover:border-orange-300">
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white rounded-full p-3 group-hover:bg-orange-600 transition-colors duration-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-orange-600">
-                CA / CS Professional
-              </h3>
-              <p className="mt-2 text-gray-600 text-center group-hover:text-gray-800">
-                I provide financial or legal services
-              </p>
-            </button>
-
+            <Link to="/professional-login">
+              <button className="group relative flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-orange-50 border-2 border-transparent hover:border-orange-300">
+                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white rounded-full p-3 group-hover:bg-orange-600 transition-colors duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-orange-600">
+                  CA / CS Professional
+                </h3>
+                <p className="mt-2 text-gray-600 text-center group-hover:text-gray-800">
+                  I provide financial or legal services
+                </p>
+              </button>
+            </Link>
             {/* Customer Button */}
-            <button className="group relative flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-orange-50 border-2 border-transparent hover:border-orange-300">
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white rounded-full p-3 group-hover:bg-orange-600 transition-colors duration-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-orange-600">
-                Individual Customer
-              </h3>
-              <p className="mt-2 text-gray-600 text-center group-hover:text-gray-800">
-                I need financial or legal services
-              </p>
-            </button>
+            <Link to="/customer-login">
+              <button className="group relative flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-orange-50 border-2 border-transparent hover:border-orange-300">
+                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white rounded-full p-3 group-hover:bg-orange-600 transition-colors duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-orange-600">
+                  Individual Customer
+                </h3>
+                <p className="mt-2 text-gray-600 text-center group-hover:text-gray-800">
+                  I need financial or legal services
+                </p>
+              </button>
+            </Link>
 
             {/* Company Button */}
-            <button className="group relative flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-orange-50 border-2 border-transparent hover:border-orange-300">
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white rounded-full p-3 group-hover:bg-orange-600 transition-colors duration-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-orange-600">
-                Business / Company
-              </h3>
-              <p className="mt-2 text-gray-600 text-center group-hover:text-gray-800">
-                We need corporate services
-              </p>
-            </button>
+            <Link to="/company-login">
+              <button className="group relative flex flex-col items-center justify-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-orange-50 border-2 border-transparent hover:border-orange-300">
+                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white rounded-full p-3 group-hover:bg-orange-600 transition-colors duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-orange-600">
+                  Business / Company
+                </h3>
+                <p className="mt-2 text-gray-600 text-center group-hover:text-gray-800">
+                  Power Up: Company Login
+                </p>
+              </button>
+            </Link>
           </div>
         </div>
 

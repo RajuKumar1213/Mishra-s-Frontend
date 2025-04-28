@@ -7,61 +7,36 @@ import {
   FaBusinessTime,
   FaTasks,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import taskService from "../services/taskServices";
+import { ProfessionalAssignmentTask } from "../components";
+import spinner from "/spinner.svg";
+import { useSelector } from "react-redux";
 
 const CacsPannelPage = () => {
   const navigate = useNavigate();
+  const [assignedTask, setAssignedTask] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const userData = useSelector((state) => state.auth.userData);
 
-  const [profile] = useState({
-    profilePicture: "https://randomuser.me/api/portraits/men/32.jpg",
-    assignedCustomers: [
-      {
-        id: 1,
-        name: "John Doe",
-        workDetails: "Tax Filing",
-        status: "Pending",
-        deadline: "2023-12-15",
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        workDetails: "Audit Report",
-        status: "In Progress",
-        deadline: "2023-12-20",
-      },
-      {
-        id: 3,
-        name: "Robert Johnson",
-        workDetails: "GST Compliance",
-        status: "New",
-        deadline: "2024-01-05",
-      },
-    ],
-    name: "John CA",
-    email: "johnca@example.com",
-    state: "California",
-    qualifications: "CA, CPA",
-    experience: "5",
-  });
-
-  const handleStartWork = (customerId) => {
-    console.log("Starting work for customer:", customerId);
-    // Add your work start logic here
-    navigate(`/professional/work/${customerId}`);
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "In Progress":
-        return "bg-blue-100 text-blue-800";
-      case "New":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+  useEffect(() => {
+    setLoading(true);
+    taskService
+      .getProfessionalTasks()
+      .then((response) => {
+        if (response.statusCode === 200) {
+          setAssignedTask(response.data);
+          console.log(response.data);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     if (!sessionStorage.getItem("reloaded")) {
@@ -73,27 +48,31 @@ const CacsPannelPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#FF6F00] to-[#FF8F00] text-white p-6 shadow-md">
+      <div className="bg-gradient-to-r from-[#FF6F00] to-[#FF8F00] text-white px-6 py-3 shadow-md">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl md:text-3xl font-bold">
             CA/CS Professional Dashboard
           </h1>
           <div className="flex items-center space-x-4">
-            <img
-              src={profile.profilePicture}
-              alt="Profile"
-              className="w-12 h-12 rounded-full border-2 border-white"
-            />
-            <span className="font-medium">{profile.name}</span>
+            <Link to={"/professional-profile"}>
+              <img
+                src={userData?.professional?.profilePicture}
+                alt="Profile"
+                className="w-12 h-12 rounded-full border-2 border-white"
+              />
+            </Link>
+            <span className="font-medium">
+              {userData?.professional?.name} - {userData?.professional?.role}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Profile Summary Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        {/* <div className="max-w-2xs">
+          <div className="bg-white w-full rounded-xl shadow-md overflow-hidden">
             <div className="bg-[#FF6F00] p-4 text-white">
               <h2 className="text-xl font-semibold">Professional Profile</h2>
             </div>
@@ -139,88 +118,34 @@ const CacsPannelPage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Work Assignment Section */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="bg-[#FF6F00] p-4 text-white">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">Your Assignments</h2>
                 <div className="flex items-center space-x-2">
                   <FaTasks className="text-white" />
-                  <span>{profile.assignedCustomers.length} Active Tasks</span>
+                  <span>{assignedTask?.tasks?.length} Active Tasks</span>
                 </div>
               </div>
             </div>
             <div className="p-6">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Client
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Work Details
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Assig
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {profile.assignedCustomers.map((customer) => (
-                      <tr key={customer.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 bg-[#FF6F00] rounded-full flex items-center justify-center text-white">
-                              {customer.name.charAt(0)}
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {customer.name}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {customer.workDetails}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                              customer.status
-                            )}`}
-                          >
-                            {customer.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(customer.deadline).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() => handleStartWork(customer.id)}
-                            className="bg-[#FF6F00] hover:bg-[#E65C00] text-white py-1 px-3 rounded-md text-sm transition-colors"
-                          >
-                            {customer.status === "New"
-                              ? "Start Work"
-                              : "Continue"}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {loading ? (
+                  <img className="mx-auto" src={spinner} alt="Loading" />
+                ) : !assignedTask?.tasks?.length ? (
+                  <h2 className="font-thin text-lg text-gray-700">
+                    No Assignment yet. Stay tuned company will assign you tasks
+                    very shortly!
+                  </h2>
+                ) : (
+                  <ProfessionalAssignmentTask
+                    assignedCustomers={assignedTask}
+                  />
+                )}
               </div>
 
               {/* Stats Section */}
@@ -233,7 +158,7 @@ const CacsPannelPage = () => {
                     </h3>
                   </div>
                   <p className="text-3xl font-bold text-[#FF6F00] mt-2">
-                    {profile.assignedCustomers.length}
+                    {assignedTask?.tasks?.length}
                   </p>
                 </div>
                 <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
@@ -243,8 +168,8 @@ const CacsPannelPage = () => {
                   </div>
                   <p className="text-3xl font-bold text-[#FF6F00] mt-2">
                     {
-                      profile.assignedCustomers.filter(
-                        (c) => c.status === "In Progress"
+                      assignedTask?.tasks?.filter(
+                        (c) => c.status === "IN_PROGRESS"
                       ).length
                     }
                   </p>
@@ -257,7 +182,7 @@ const CacsPannelPage = () => {
                     </h3>
                   </div>
                   <p className="text-3xl font-bold text-[#FF6F00] mt-2">
-                    {profile.experience}
+                    {userData?.professional?.experience || 0}
                   </p>
                 </div>
               </div>

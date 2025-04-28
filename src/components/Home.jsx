@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Container from "./Container";
 import KeyFeatures from "./KeyFeatures";
 import { Link } from "react-router-dom";
+import CompanyTopServices from "./CompanyTopServices ";
 
 const Home = () => {
   useEffect(() => {
@@ -139,170 +140,10 @@ const Home = () => {
           </div>
         </motion.div>
       </motion.section>
-
-      {/* Service Highlights */}
-      <motion.section
-        className="py-10 sm:py-14 md:py-20 bg-gradient-to-b from-white to-orange-50"
-        variants={fadeIn}
-        initial="initial"
-        whileInView="animate"
-        viewport={{ once: true }}
-      >
-        <Container width="max-w-7xl" className="px-4 sm:px-6">
-          <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">
-              Our Comprehensive Services
-            </h2>
-            <p className="text-lg sm:text-xl text-orange-600 max-w-2xl mx-auto">
-              End-to-end financial solutions tailored to your unique needs
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            {[
-              {
-                title: "Tax Planning & Filing",
-                desc: "Strategic tax solutions that maximize your savings while ensuring full compliance.",
-                icon: (
-                  <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"
-                    />
-                  </svg>
-                ),
-                color: "bg-orange-100",
-              },
-              {
-                title: "GST Compliance",
-                desc: "Complete GST registration, return filing, and advisory services for businesses.",
-                icon: (
-                  <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                ),
-                color: "bg-orange-100",
-              },
-              {
-                title: "Company Incorporation",
-                desc: "Seamless registration for startups, private limited companies, and LLPs.",
-                icon: (
-                  <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                ),
-                color: "bg-orange-100",
-              },
-              {
-                title: "Audit & Assurance",
-                desc: "Comprehensive audit services that ensure financial integrity and compliance.",
-                icon: (
-                  <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                ),
-                color: "bg-orange-100",
-              },
-              {
-                title: "Wealth Management",
-                desc: "Personalized investment strategies to grow and protect your assets.",
-                icon: (
-                  <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                ),
-                color: "bg-orange-100",
-              },
-              {
-                title: "Legal Advisory",
-                desc: "Expert guidance on corporate law, contracts, and regulatory compliance.",
-                icon: (
-                  <svg
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
-                    />
-                  </svg>
-                ),
-                color: "bg-orange-100",
-              },
-            ].map((service, index) => (
-              <motion.div
-                key={index}
-                className={`${service.color} p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all border border-transparent hover:border-orange-300`}
-                variants={cardHover}
-                whileHover="hover"
-              >
-                <div className="mb-4 sm:mb-6">{service.icon}</div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  {service.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </Container>
-      </motion.section>
-
+      // company top services
+      <CompanyTopServices />
       {/* Key Features */}
       <KeyFeatures />
-
       {/* Testimonial Section */}
       <motion.section
         className="py-10 sm:py-14 md:py-20 bg-orange-600 text-white"
@@ -375,7 +216,6 @@ const Home = () => {
           </div>
         </Container>
       </motion.section>
-
       {/* CTA Section */}
       <motion.section
         className="py-16 sm:py-20 md:py-24 bg-gradient-to-r from-orange-500 to-orange-600 text-white"

@@ -112,8 +112,9 @@ export const router = createBrowserRouter([
           <AuthLayout>{withSuspense(ProfessionalProfilePage)}</AuthLayout>
         ),
       },
+
       {
-        path: "/professional/work/:customerId",
+        path: "professional/work/:taskId",
         element: <AuthLayout>{withSuspense(ProfessionalWork)}</AuthLayout>,
       },
 

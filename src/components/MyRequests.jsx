@@ -37,8 +37,11 @@ function MyRequests() {
       </h2>
       {loading ? (
         <img className="mx-auto" src={spinner} />
+      ) : !tasks?.length ? (
+        <h2 className="text-md font-thin text-gray-500 ">
+          No tasks found. Choose some service to get started.
+        </h2>
       ) : (
-        tasks?.length &&
         tasks.map((task) => (
           <div className="space-y-4">
             <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">

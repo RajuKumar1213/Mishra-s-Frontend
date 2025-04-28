@@ -11,6 +11,8 @@ import Services from "./Services";
 import CustomerLogin from "./CustomerLogin";
 import ViewAllAssigned from "./ViewAllAssigned";
 import PageLoader from "./PageLoader";
+import ProfessionalAssignmentTask from "./ProfessionalAssignmentTask";
+import CompanyTopServices from "./CompanyTopServices ";
 
 export {
   Button,
@@ -26,4 +28,6 @@ export {
   CustomerLogin,
   ViewAllAssigned,
   PageLoader,
+  ProfessionalAssignmentTask,
+  CompanyTopServices
 };

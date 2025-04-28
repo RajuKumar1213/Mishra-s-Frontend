@@ -37,7 +37,7 @@ function ServicesDropdown() {
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       {loading ? (
         <div className="h-14">
-          <img className="mx-auto " src={loading} alt="...loading" />
+          <img className="mx-auto " src={spinner} alt="...loading" />
         </div>
       ) : (
         serviceGroups.map((group, index) => (
