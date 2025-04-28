@@ -35,34 +35,40 @@ function ServicesDropdown() {
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
-      {serviceGroups.map((group, index) => (
-        <div key={index}>
-          <button
-            onClick={() => toggleCategory(group.category)}
-            className={`w-full p-4 text-left    transition-colors flex justify-between items-center ${
-              activeCategory == group.category
-                ? "bg-gray-300 hover:bg-gray-400"
-                : "bg-white hover:bg-gray-50"
-            }`}
-          >
-            <h3 className="font-semibold text-gray-800">{group.category}</h3>
-            {activeCategory === group.category ? (
-              <FiChevronUp className="text-gray-500" />
-            ) : (
-              <FiChevronDown className="text-gray-500" />
-            )}
-          </button>
-
-          {/* Show ServicesBox only if this category is active */}
-          {loading ? (
-            <img className="mx-auto" src={spinner} />
-          ) : (
-            activeCategory === group.category && (
-              <ServicesBox services={group.services} />
-            )
-          )}
+      {loading ? (
+        <div className="h-14">
+          <img className="mx-auto " src={loading} alt="...loading" />
         </div>
-      ))}
+      ) : (
+        serviceGroups.map((group, index) => (
+          <div key={index}>
+            <button
+              onClick={() => toggleCategory(group.category)}
+              className={`w-full p-4 text-left    transition-colors flex justify-between items-center ${
+                activeCategory == group.category
+                  ? "bg-gray-300 hover:bg-gray-400"
+                  : "bg-white hover:bg-gray-50"
+              }`}
+            >
+              <h3 className="font-semibold text-gray-800">{group.category}</h3>
+              {activeCategory === group.category ? (
+                <FiChevronUp className="text-gray-500" />
+              ) : (
+                <FiChevronDown className="text-gray-500" />
+              )}
+            </button>
+
+            {/* Show ServicesBox only if this category is active */}
+            {loading ? (
+              <img className="mx-auto" src={spinner} />
+            ) : (
+              activeCategory === group.category && (
+                <ServicesBox services={group.services} />
+              )
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
 }

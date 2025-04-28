@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import Container from "./Container";
 import KeyFeatures from "./KeyFeatures";
 import { Link } from "react-router-dom";
 
 const Home = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: {
@@ -30,7 +34,7 @@ const Home = () => {
     <div className="bg-white min-h-screen flex flex-col relative overflow-hidden">
       {/* Hero Section with Full HD Background */}
       <motion.section
-        className="relative h-screen w-full flex items-center -top-4 md:top-0 justify-center overflow-hidden"
+        className="relative h-screen w-full flex items-center justify-center overflow-hidden"
         initial="initial"
         animate="animate"
         variants={heroVariants}
@@ -44,8 +48,8 @@ const Home = () => {
         />
 
         {/* Hero Content */}
-        <Container width="max-w-7xl" className="relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-12 md:px-6">
+        <Container width="max-w-7xl" className="relative z-10 px-4 sm:px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
             {/* Text Content */}
             <motion.div
               className="flex-1 text-white"
@@ -56,35 +60,29 @@ const Home = () => {
                 transition: { duration: 0.8, delay: 0.3 },
               }}
             >
-              <h1 className="text-4xl md:text-6xl lg:text-6xl text-center md:text-left font-bold mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-center lg:text-left font-bold mb-4 sm:mb-6 leading-tight">
                 <span className="block">Expert Financial</span>
                 <span className="text-orange-400">Solutions</span> Tailored For
                 You
               </h1>
-              <p className="text-lg md:text-2xl text-center md:text-left mb-8 max-w-2xl opacity-90 text-gray-800 font-bold">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-center lg:text-left mb-6 sm:mb-8 max-w-2xl opacity-90 text-gray-800 font-bold">
                 Partner with India's top CA & CS professionals for tax
                 optimization, compliance excellence, and strategic wealth
                 growth.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
                   to="/get-started"
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 px-10 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-medium text-lg border-2 border-orange-400/50 text-center md:text-left"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 sm:py-4 px-8 sm:px-10 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-medium text-base sm:text-lg border-2 border-orange-400/50 text-center"
                 >
                   Get Started Now
                 </Link>
-                {/* <a
-                  href="#consultation"
-                  className="bg-black/60 backdrop-blur-md border-2 border-white/30 text-white py-4 px-10 rounded-xl hover:bg-black/70 transition-all font-medium text-lg hover:shadow-md"
-                >
-                  Free Consultation
-                </a> */}
               </div>
             </motion.div>
 
             {/* Stats Cards */}
             <motion.div
-              className="flex-1 grid grid-cols-2 gap-6"
+              className="flex-1 grid grid-cols-2 gap-3 sm:gap-6 mt-6 lg:mt-0"
               initial={{ opacity: 0, y: 50 }}
               animate={{
                 opacity: 1,
@@ -100,12 +98,14 @@ const Home = () => {
               ].map((stat, index) => (
                 <div
                   key={index}
-                  className="bg-black/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 hover:border-orange-400/50 transition-all text-center md:text-left"
+                  className="bg-black/10 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/20 hover:border-orange-400/50 transition-all text-center"
                 >
-                  <h3 className="text-3xl font-bold text-orange-400 mb-2">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-400 mb-1 sm:mb-2">
                     {stat.value}
                   </h3>
-                  <p className="text-white/90">{stat.label}</p>
+                  <p className="text-white/90 text-sm sm:text-base">
+                    {stat.label}
+                  </p>
                 </div>
               ))}
             </motion.div>
@@ -114,7 +114,7 @@ const Home = () => {
 
         {/* Scroll Indicator */}
         <motion.div
-          className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 "
+          className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2"
           animate={{
             y: [0, 15, 0],
             transition: {
@@ -124,9 +124,9 @@ const Home = () => {
             },
           }}
         >
-          <div className="w-8 h-14 rounded-full border-2 border-orange-400 flex justify-center p-1">
+          <div className="w-6 h-10 sm:w-8 sm:h-14 rounded-full border-2 border-orange-400 flex justify-center p-1">
             <motion.div
-              className="w-2 h-2 bg-orange-400 rounded-full"
+              className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-orange-400 rounded-full"
               animate={{
                 y: [0, 8, 0],
                 transition: {
@@ -142,30 +142,30 @@ const Home = () => {
 
       {/* Service Highlights */}
       <motion.section
-        className="py-14 md:py-20 bg-gradient-to-b from-white to-orange-50"
+        className="py-10 sm:py-14 md:py-20 bg-gradient-to-b from-white to-orange-50"
         variants={fadeIn}
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
       >
-        <Container width="max-w-7xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+        <Container width="max-w-7xl" className="px-4 sm:px-6">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">
               Our Comprehensive Services
             </h2>
-            <p className="text-xl text-orange-600 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-orange-600 max-w-2xl mx-auto">
               End-to-end financial solutions tailored to your unique needs
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-1 md:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {[
               {
                 title: "Tax Planning & Filing",
                 desc: "Strategic tax solutions that maximize your savings while ensuring full compliance.",
                 icon: (
                   <svg
-                    className="w-12 h-12 text-orange-500"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -185,7 +185,7 @@ const Home = () => {
                 desc: "Complete GST registration, return filing, and advisory services for businesses.",
                 icon: (
                   <svg
-                    className="w-12 h-12 text-orange-500"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -205,7 +205,7 @@ const Home = () => {
                 desc: "Seamless registration for startups, private limited companies, and LLPs.",
                 icon: (
                   <svg
-                    className="w-12 h-12 text-orange-500"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -225,7 +225,7 @@ const Home = () => {
                 desc: "Comprehensive audit services that ensure financial integrity and compliance.",
                 icon: (
                   <svg
-                    className="w-12 h-12 text-orange-500"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -245,7 +245,7 @@ const Home = () => {
                 desc: "Personalized investment strategies to grow and protect your assets.",
                 icon: (
                   <svg
-                    className="w-12 h-12 text-orange-500"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -265,7 +265,7 @@ const Home = () => {
                 desc: "Expert guidance on corporate law, contracts, and regulatory compliance.",
                 icon: (
                   <svg
-                    className="w-12 h-12 text-orange-500"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -283,15 +283,17 @@ const Home = () => {
             ].map((service, index) => (
               <motion.div
                 key={index}
-                className={`${service.color} p-8 rounded-2xl shadow-md hover:shadow-xl transition-all border border-transparent hover:border-orange-300`}
+                className={`${service.color} p-6 sm:p-8 rounded-2xl shadow-md hover:shadow-xl transition-all border border-transparent hover:border-orange-300`}
                 variants={cardHover}
                 whileHover="hover"
               >
-                <div className="mb-6">{service.icon}</div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                <div className="mb-4 sm:mb-6">{service.icon}</div>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                   {service.title}
                 </h3>
-                <p className="text-gray-600">{service.desc}</p>
+                <p className="text-gray-600 text-sm sm:text-base">
+                  {service.desc}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -303,23 +305,23 @@ const Home = () => {
 
       {/* Testimonial Section */}
       <motion.section
-        className="py-14 md:py-20 bg-orange-600 text-white"
+        className="py-10 sm:py-14 md:py-20 bg-orange-600 text-white"
         variants={fadeIn}
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
       >
-        <Container width="max-w-7xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
+        <Container width="max-w-7xl" className="px-4 sm:px-6">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">
               Trusted by Businesses & Individuals
             </h2>
-            <p className="text-xl text-orange-100 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-orange-100 max-w-2xl mx-auto">
               Don't just take our word for it - hear what our clients say
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-2 md:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 quote:
@@ -345,13 +347,13 @@ const Home = () => {
             ].map((testimonial, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 hover:border-orange-300 transition-all"
+                className="bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-white/20 hover:border-orange-300 transition-all"
               >
-                <div className="flex mb-4">
+                <div className="flex mb-3 sm:mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <svg
                       key={i}
-                      className="w-5 h-5 text-orange-300"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-orange-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -359,10 +361,14 @@ const Home = () => {
                     </svg>
                   ))}
                 </div>
-                <p className="text-lg italic mb-6">"{testimonial.quote}"</p>
+                <p className="text-base sm:text-lg italic mb-4 sm:mb-6">
+                  "{testimonial.quote}"
+                </p>
                 <div>
                   <p className="font-bold">{testimonial.author}</p>
-                  <p className="text-orange-200">{testimonial.role}</p>
+                  <p className="text-orange-200 text-sm sm:text-base">
+                    {testimonial.role}
+                  </p>
                 </div>
               </div>
             ))}
@@ -372,30 +378,30 @@ const Home = () => {
 
       {/* CTA Section */}
       <motion.section
-        className="py-24 bg-gradient-to-r from-orange-500 to-orange-600 text-white"
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-r from-orange-500 to-orange-600 text-white"
         variants={fadeIn}
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
       >
-        <Container width="max-w-4xl" className="text-center">
-          <h2 className="text-4xl font-bold mb-6">
+        <Container width="max-w-4xl" className="text-center px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6">
             Ready to Transform Your Financial Strategy?
           </h2>
-          <p className="text-xl mb-10 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl mb-8 sm:mb-10 max-w-2xl mx-auto">
             Join thousands of satisfied clients who trust us with their
             financial success.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/get-started"
-              className="bg-white text-orange-600 hover:bg-gray-100 py-4 px-12 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-bold text-lg"
+              className="bg-white text-orange-600 hover:bg-gray-100 py-3 sm:py-4 px-8 sm:px-12 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-bold text-base sm:text-lg"
             >
               Get Started Today
             </Link>
             <a
               href="#consultation"
-              className="bg-transparent border-2 border-white hover:bg-white/10 py-4 px-12 rounded-xl transition-all font-bold text-lg hover:shadow-md"
+              className="bg-transparent border-2 border-white hover:bg-white/10 py-3 sm:py-4 px-8 sm:px-12 rounded-xl transition-all font-bold text-base sm:text-lg hover:shadow-md"
             >
               Speak to an Expert
             </a>
