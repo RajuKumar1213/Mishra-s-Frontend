@@ -7,8 +7,12 @@ const Login = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
 
-    if (role) {
-      navigate("/");
+    if (role == "Professional") {
+      navigate("/professional/dashboard");
+    } else if (role == "Customer") {
+      navigate("/customer-home");
+    } else if (role == "Company") {
+      navigate("/company/dashboard");
     } else {
       navigate("/");
     }
