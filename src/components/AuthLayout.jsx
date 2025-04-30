@@ -17,10 +17,10 @@ function AuthLayout({ children, authentication = true }) {
     }
 
     // If authentication is required and user is not authenticated
-    // if (authentication && !authStatus) {
-    //   navigate("/");
-    //   return;
-    // }
+    if (authentication && !authStatus) {
+      navigate("/login");
+      return;
+    }
 
     // If authentication is not required and user is authenticated
     // Redirect away from public routes (like login/signup) to dashboard
