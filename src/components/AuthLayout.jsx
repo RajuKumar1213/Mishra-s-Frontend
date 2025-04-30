@@ -18,7 +18,7 @@ function AuthLayout({ children, authentication = true }) {
 
     // If authentication is required and user is not authenticated
     if (authentication && !authStatus) {
-      navigate("/login");
+      navigate("/");
       return;
     }
 

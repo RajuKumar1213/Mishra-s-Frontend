@@ -6,7 +6,6 @@ import { AuthLayout, PageLoader } from "../components";
 
 // Lazy Load Pages
 const HeroPage = lazy(() => import("../pages/HeroPage"));
-const Login = lazy(() => import("../components/Login"));
 const CaCsSignupPage = lazy(() => import("../pages/CaCsSignupPage"));
 const CompanyLoginPage = lazy(() => import("../pages/CompanyLoginPage"));
 const CacsPannelPage = lazy(() => import("../pages/CacsPannelPage"));
@@ -46,7 +45,6 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: withSuspense(HeroPage) },
       { path: "/get-started", element: withSuspense(GetStartedPage) },
-      { path: "/login", element: withSuspense(Login) },
 
       {
         path: "/confirmation",
