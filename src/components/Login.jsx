@@ -13,8 +13,6 @@ const Login = () => {
       navigate("/customer-home");
     } else if (role == "Company") {
       navigate("/company/dashboard");
-    } else {
-      navigate("/");
     }
     // else stay on login page
   }, []);
