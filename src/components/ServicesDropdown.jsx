@@ -5,9 +5,11 @@ import serviceCatalogService from "../services/serviceCatalogService";
 import spinner from "/spinner.svg";
 
 function ServicesDropdown() {
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeCategory, setActiveCategory] = useState("COMPANY SERVICES");
   const [serviceGroups, setServiceGroups] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  console.log(activeCategory);
 
   // Toggle category dropdown
   const toggleCategory = (categoryName) => {

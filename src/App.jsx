@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { login, logout, syncAuthState } from "./redux/features/authSlice";
 import { Outlet } from "react-router-dom";
-import { Container, Footer, Navbar } from "./components";
+import { Container, Footer, Navbar, ScrollToTop } from "./components";
 import { Toaster } from "react-hot-toast";
 import spinner from "/spinner.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,8 +13,6 @@ import companyService from "./services/companyService";
 function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const authStatus = useSelector((state) => state.auth.status);
-  const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -23,7 +21,6 @@ function App() {
     if (accessToken && role) {
       if (role === "Professional") {
         professionalService.getProfDetails().then((response) => {
-          console.log(response);
           if (response.statusCode === 200) {
             dispatch(login(response.data));
             setLoading(false);
@@ -61,6 +58,7 @@ function App() {
 
   return !loading ? (
     <div className="min-h-screen box-border text-white">
+      <ScrollToTop />
       <Navbar />
       <Toaster position="top-center" reverseOrder={false} />
       <Outlet />

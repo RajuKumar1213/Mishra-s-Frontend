@@ -18,6 +18,7 @@ import NotFoundPage from "./NotFoundPage";
 import GetStartedPage from "./GetStartedPage";
 import ServiceConfirmation from "./ServiceConfirmation";
 import TaskDetails from "./TaskDetails";
+import { ScrollTextIcon } from "lucide-react";
 
 export {
   CaCsSignupPage,

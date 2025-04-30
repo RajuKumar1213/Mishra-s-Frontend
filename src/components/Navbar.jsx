@@ -20,38 +20,6 @@ function Navbar() {
   const userData = useSelector((state) => state.auth.userData);
   const userRole = userData?.role;
 
-  // Make sure component re-renders when auth state changes
-
-  console.log(
-    "Navbar rendering with auth status:",
-    useSelector((state) => state.auth.status)
-  );
-
-  // Force re-render when any Redux state changes
-  const forceUpdate = useCallback(() => {
-    console.log("Force update triggered");
-    setRenderKey(Date.now());
-  }, []);
-
-  const [renderKey, setRenderKey] = useState(Date.now());
-
-  // Force component to evaluate auth state on EVERY render
-  useEffect(() => {
-    console.log("Auth status in Navbar useEffect:", authStatus);
-    console.log("User data in Navbar useEffect:", userData);
-  });
-
-  // Check for auth status on mount and when location changes
-  // useEffect(() => {
-  //   // Force component to re-render when location changes
-  //   // This ensures we catch auth state changes after redirects
-  //   setForceUpdate((prev) => prev + 1);
-
-  //   // Close mobile menu when navigating
-  //   closeMenu();
-  // }, [location.pathname]);
-
-  // Add an effect to handle auth token validation
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const storedRole = localStorage.getItem("role");

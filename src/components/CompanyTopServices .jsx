@@ -118,10 +118,10 @@ const CompanyTopServices = () => {
   ];
 
   // Navigate to service details page
-  const handleServiceClick = (categoryName, serviceName) => {
-    const formattedCategory = categoryName.toLowerCase().replace(/\s+/g, "-");
-    const formattedService = serviceName.toLowerCase().replace(/\s+/g, "-");
-    navigate(`/services/${formattedCategory}/${formattedService}`);
+  const handleServiceClick = (categoryName, serviceName, description) => {
+    navigate(`/customer-login`, {
+      state: { categoryName, serviceName, description },
+    });
   };
 
   return (
@@ -172,7 +172,11 @@ const CompanyTopServices = () => {
                     variants={serviceVariants}
                     whileHover="hover"
                     onClick={() =>
-                      handleServiceClick(category.categoryName, service.name)
+                      handleServiceClick(
+                        category.categoryName,
+                        service.name,
+                        service.description
+                      )
                     }
                     onMouseEnter={() =>
                       setHoveredService(`${categoryIndex}-${serviceIndex}`)

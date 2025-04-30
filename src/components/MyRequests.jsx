@@ -31,7 +31,7 @@ function MyRequests() {
   }, []);
 
   return (
-    <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden p-6">
+    <div className="mt-6  bg-white rounded-xl shadow-md overflow-hidden p-6">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">
         Your Active Requests
       </h2>
@@ -43,7 +43,7 @@ function MyRequests() {
         </h2>
       ) : (
         tasks.map((task) => (
-          <div className="space-y-4">
+          <div className="space-y-4 mt-3">
             <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start">
                 <div>
@@ -55,7 +55,29 @@ function MyRequests() {
                     {format(new Date(task?.createdAt), "dd MMMM yyyy")}
                   </p>
                 </div>
-                <span className="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                <span
+                  className={`px-3 py-1 text-xs font-medium rounded-full 
+    ${task?.status === "NEW" && "bg-blue-100 text-blue-800"}
+    ${task?.status === "DOCUMENTS_UPLOADED" && "bg-purple-100 text-purple-800"}
+    ${task?.status === "ASSIGNED" && "bg-indigo-100 text-indigo-800"}
+    ${
+      task?.status === "IN_PROGRESS" &&
+      "bg-yellow-100 text-yellow-800 animate-pulse"
+    }
+    ${task?.status === "COMPLETED" && "bg-green-100 text-green-800"}
+    ${task?.status === "REJECTED" && "bg-red-100 text-red-800"}
+    ${
+      ![
+        "NEW",
+        "DOCUMENTS_UPLOADED",
+        "ASSIGNED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "REJECTED",
+      ].includes(task?.status) && "bg-gray-100 text-gray-800"
+    }
+  `}
+                >
                   {task?.status === "NEW"
                     ? "New"
                     : task?.status === "DOCUMENTS_UPLOADED"

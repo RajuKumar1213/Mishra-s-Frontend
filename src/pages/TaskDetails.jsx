@@ -82,6 +82,14 @@ function TaskDetails() {
 
   const statusInfo = getStatusInfo(requestData?.status);
 
+  const finalDoc = requestData?.documents?.filter(
+    (doc) => doc.uploadedByRole === "Professional"
+  );
+
+  const customerUploadedDocs = requestData?.documents?.filter(
+    (doc) => doc.uploadedByRole === "Customer"
+  );
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 text-gray-600">
       <motion.div
@@ -180,7 +188,7 @@ function TaskDetails() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FiFileText className="text-orange-500 mr-2" />
-              Submitted Documents ({requestData?.documents?.length})
+              Submitted Documents by you ({customerUploadedDocs?.length})
             </h2>
 
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -195,7 +203,7 @@ function TaskDetails() {
                 </div>
               </div>
 
-              {requestData?.documents?.map((doc) => (
+              {customerUploadedDocs?.map((doc) => (
                 <div
                   key={doc._id}
                   className="grid grid-cols-12 p-4 border-b border-gray-200 hover:bg-gray-50"
@@ -229,6 +237,72 @@ function TaskDetails() {
                 </div>
               ))}
             </div>
+          </div>
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <FiFileText className="text-orange-500 mr-2" />
+              Documents Submitted Upon Task Completion. Final Documents (
+              {finalDoc?.length})
+            </h2>
+
+            {!finalDoc?.length ? (
+              <h2 className="font-thin text-xl text-gray-700">
+                You will see your final documents here
+              </h2>
+            ) : (
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="grid grid-cols-12 bg-gray-50 p-4 border-b border-gray-200">
+                  <div className="col-span-6 font-medium text-gray-700">
+                    Document Name
+                  </div>
+                  <div className="col-span-3 font-medium text-gray-700">
+                    Type
+                  </div>
+                  <div className="col-span-2 font-medium text-gray-700">
+                    Size
+                  </div>
+                  <div className="col-span-1 font-medium text-gray-700">
+                    Actions
+                  </div>
+                </div>
+
+                {finalDoc?.map((doc) => (
+                  <div
+                    key={doc._id}
+                    className="grid grid-cols-12 p-4 border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <div className="col-span-6 flex items-center">
+                      <FiFileText className="text-orange-500 mr-3" />
+                      <span className="truncate">{doc.name}</span>
+                    </div>
+                    <div className="col-span-3 text-gray-600">
+                      {doc.fileType}
+                    </div>
+                    <div className="col-span-2 text-gray-600">
+                      {formatFileSize(doc.fileSize)}
+                    </div>
+                    <div className="col-span-1 flex justify-end space-x-2">
+                      <button
+                        onClick={() => window.open(doc.fileUrl, "_blank")}
+                        className="text-orange-600 hover:text-orange-700 p-1"
+                        title="View Document"
+                      >
+                        <FiEye />
+                      </button>
+                      <button
+                        onClick={() =>
+                          window.open(doc.fileUrl, "_blank", "download")
+                        }
+                        className="text-gray-600 hover:text-gray-700 p-1"
+                        title="Download"
+                      >
+                        <FiDownload />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Timeline */}

@@ -13,6 +13,7 @@ import ViewAllAssigned from "./ViewAllAssigned";
 import PageLoader from "./PageLoader";
 import ProfessionalAssignmentTask from "./ProfessionalAssignmentTask";
 import CompanyTopServices from "./CompanyTopServices ";
+import ScrollToTop from "./ScrollToTop";
 
 export {
   Button,
@@ -29,5 +30,6 @@ export {
   ViewAllAssigned,
   PageLoader,
   ProfessionalAssignmentTask,
-  CompanyTopServices
+  CompanyTopServices,
+  ScrollToTop,
 };

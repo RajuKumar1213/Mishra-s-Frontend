@@ -40,8 +40,7 @@ const CustomerHome = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch customer data and recommended services
-    window.scroll(0, 0);
+    window.scrollTo(0, 0);
 
     const fetchData = async () => {
       try {

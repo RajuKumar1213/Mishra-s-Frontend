@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Input from "./Input";
 import Button from "./Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import spinner from "/spinner.svg";
 import extractErrorMessage from "../utils/extractErrorMessage";
@@ -10,6 +10,7 @@ import customerService from "../services/customerService";
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [otp, setOtp] = useState(null);
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
@@ -17,6 +18,10 @@ const CustomerLogin = () => {
   const [email, setEmail] = useState("");
   const [resendCountdown, setResendCountdown] = useState(0);
   const [startCountdown, setStartCountdown] = useState(false);
+
+  // State passed from navigation
+  const { state } = location;
+  const { categoryName, serviceName, description } = state || {};
 
   const {
     register,
@@ -44,7 +49,7 @@ const CustomerLogin = () => {
       .catch((error) => {
         const message = extractErrorMessage(error);
         setError(message);
-        toast.error(message);
+        toast.error("Something went wrong while sending otp.");
         setLoading(false);
         setStartCountdown(false);
       });
@@ -140,6 +145,37 @@ const CustomerLogin = () => {
   return (
     <div className="bg-gradient-to-br from-orange-50 to-orange-100 min-h-screen flex items-center justify-center px-4 py-10">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-orange-200">
+        {/* Service Details Section - Only shown if state is passed */}
+        {state && (
+          <div className="mb-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
+            <h3 className="text-lg font-semibold text-orange-700 mb-2">
+              Service Details
+            </h3>
+            <div className="space-y-2">
+              {categoryName && (
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Category:</span>{" "}
+                  <span className="text-orange-600">{categoryName}</span>
+                </p>
+              )}
+              {serviceName && (
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">Service:</span>{" "}
+                  <span className="text-orange-600">{serviceName}</span>
+                </p>
+              )}
+              {description && (
+                <p className="text-sm">
+                  <span className="font-medium text-gray-700">
+                    Description:
+                  </span>{" "}
+                  <span className="text-gray-600">{description}</span>
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Logo Section */}
         <div className="flex justify-center mb-6">
           <div className="flex items-center space-x-2">

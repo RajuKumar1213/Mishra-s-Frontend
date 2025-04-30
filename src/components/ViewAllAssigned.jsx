@@ -25,8 +25,6 @@ function ViewAllAssigned({ viewAll, change }) {
       });
   }, [change]);
 
-  
-
   return (
     <div className="space-y-4">
       {loading ? (
@@ -45,15 +43,28 @@ function ViewAllAssigned({ viewAll, change }) {
             </div>
             <div className="flex items-center">
               <span
-                className={`px-3 py-1 text-xs rounded-full ${
-                  task.status === "ASSIGNED"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : task.status === "COMPLETED"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
+                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  ${
+                    task?.status === "ASSIGNED"
+                      ? "bg-yellow-200 text-yellow-900" // 🌟 Yellow, more urgent
+                      : task?.status === "IN_PROGRESS"
+                      ? "bg-blue-200 text-blue-900" // 🔵 Stronger blue
+                      : task?.status === "COMPLETED"
+                      ? "bg-emerald-200 text-emerald-900" // ✅ Rich emerald green (not basic green)
+                      : "bg-slate-100 text-slate-800" // 🧹 Cleaner, modern gray
+                  }
+
+                  `}
               >
-                {task.status}
+                {task?.status === "ASSIGNED"
+                  ? "Assigned"
+                  : task?.status === "IN_PROGRESS"
+                  ? "In Progress"
+                  : task?.status === "COMPLETED"
+                  ? "Completed"
+                  : task?.status === "DOCUMENT_UPLOADED"
+                  ? "Document Uploaded"
+                  : "New"}
               </span>
               <span className="ml-4 text-sm text-gray-500">
                 {format(new Date(task?.assignedAt), "dd MMMM yyyy")}

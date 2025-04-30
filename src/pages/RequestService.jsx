@@ -38,7 +38,6 @@ function RequestService() {
     window.scrollTo(0, 0);
   }, []);
 
-  const [recommendedServices, setRecommendedServices] = useState([]);
   const navigate = useNavigate();
 
   const handleFileUpload = (e) => {
@@ -77,10 +76,10 @@ function RequestService() {
       }
     });
 
-    console.log("Form Data ", formData);
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+    // console.log("Form Data ", formData);
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}:`, value);
+    // }
 
     taskService
       .createTask(formData)

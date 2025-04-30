@@ -23,6 +23,8 @@ const CompanyDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [viewAll, setViewAll] = useState(false);
+  const [assignTask, changeAssignTask] = useState(false);
+  const [assignedTasks, setAssignedTasks] = useState([]);
 
   // Sample data - replace with API calls
   const [professionals, setProfessionals] = useState([]);
@@ -52,7 +54,7 @@ const CompanyDashboard = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [assignTask]);
 
   useEffect(() => {
     setLoading(true);
@@ -76,7 +78,7 @@ const CompanyDashboard = () => {
   // fetching recent tasks.
 
   const handleAssignTask = (taskId, professionalId) => {
-    setLoading(true);
+    changeAssignTask(true);
     const customer = customers.find((c) => c._id === taskId);
     const professional = professionals.find((p) => p._id === professionalId);
 
@@ -86,11 +88,9 @@ const CompanyDashboard = () => {
         .companyAssignTaskToProfessional(taskId, professionalId)
         .then((response) => {
           if (response.statusCode === 200) {
-            console.log(response.data);
             // Update customer status
             toast.success(`Assigned ${customer.name} to ${professional.name}`);
-            setLoading(false);
-            window.location.reload();
+            changeAssignTask(false);
           }
         })
         .catch((error) => {
@@ -99,7 +99,7 @@ const CompanyDashboard = () => {
           toast.error("Error assigning task");
         })
         .finally(() => {
-          setLoading(false);
+          changeAssignTask(false);
         });
     }
   };
@@ -115,6 +115,24 @@ const CompanyDashboard = () => {
   //     customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
   //     customer?.task?.toLowerCase().includes(searchTerm.toLowerCase())
   // );
+
+  useEffect(() => {
+    companyService
+      .getAllTasksAfterAssigned()
+      .then((response) => {
+        if (response.statusCode === 200) {
+          setAssignedTasks(response.data);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching assigned tasks:", error);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
@@ -242,7 +260,7 @@ const CompanyDashboard = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 {/* Stats Cards */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                   <div className="flex items-center">
@@ -253,7 +271,9 @@ const CompanyDashboard = () => {
                       <p className="text-sm text-gray-500">
                         Active Professionals
                       </p>
-                      <p className="text-2xl font-bold">12</p>
+                      <p className="text-2xl font-bold">
+                        {professionals?.length}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -264,7 +284,7 @@ const CompanyDashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Active Customers</p>
-                      <p className="text-2xl font-bold">24</p>
+                      <p className="text-2xl font-bold">{customers?.length}</p>
                     </div>
                   </div>
                 </div>
@@ -275,7 +295,30 @@ const CompanyDashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Completed Tasks</p>
-                      <p className="text-2xl font-bold">156</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          assignedTasks?.filter(
+                            (task) => task.status === "COMPLETED"
+                          ).length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                  <div className="flex items-center">
+                    <div className="p-3 rounded-lg bg-[#FF6F00]/10 text-[#FF6F00] mr-4">
+                      <FaCheckCircle className="text-xl" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Assigned Tasks</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          assignedTasks?.filter(
+                            (task) => task.status === "ASSIGNED"
+                          ).length
+                        }
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -338,13 +381,21 @@ const CompanyDashboard = () => {
                               defaultValue=""
                             >
                               <option value="" disabled>
-                                Assign to
+                                Assign to{" "}
                               </option>
-                              {professionals?.map((pro) => (
-                                <option key={pro._id} value={pro._id}>
-                                  {pro.name}
-                                </option>
-                              ))}
+                              {assignTask ? (
+                                <img
+                                  src={spinner}
+                                  className="h-5"
+                                  alt="...loading"
+                                />
+                              ) : (
+                                professionals?.map((pro) => (
+                                  <option key={pro._id} value={pro._id}>
+                                    {pro.name}
+                                  </option>
+                                ))
+                              )}
                             </select>
                           </div>
                         ))

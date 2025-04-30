@@ -19,14 +19,21 @@ import {
   FaSearch,
   FaEllipsisV,
   FaTimesCircle,
+  FaArrowLeft,
+  FaRemoveFormat,
+  FaTrash,
+  FaTrashAlt,
 } from "react-icons/fa";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { Container } from "../components";
-import { useParams } from "react-router-dom";
+import { Button, Container } from "../components";
+import { useNavigate, useParams } from "react-router-dom";
 import taskService from "../services/taskServices";
 import spinner from "/spinner.svg";
+import toast from "react-hot-toast";
+import extractErrorMessage from "../utils/extractErrorMessage";
 
 const ProfessionalWork = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("documents");
   const [newMessage, setNewMessage] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -40,6 +47,12 @@ const ProfessionalWork = () => {
     useState(false);
   const { taskId } = useParams();
   const [loading, setLoading] = useState(true);
+  const [inProgressLoading, setInProgressLoading] = useState(false);
+  const [completeLoading, setCompleteLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [uploadFileLoading, setUploadFileLoading] = useState(false);
+
+  const [deletingDocId, setDeletingDocId] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,7 +74,7 @@ const ProfessionalWork = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [inProgressLoading, completeLoading, uploadFileLoading, deletingDocId]);
 
   const {
     customer,
@@ -75,39 +88,87 @@ const ProfessionalWork = () => {
     createdAt,
   } = taskData;
 
-  console.log(taskData);
-
   const handleStatusChange = (newStatus) => {
-    setToggleSetInProgressState(true);
-    taskService.professionalUpdateTask(taskId, newStatus);
-  };
-
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      // In a real app, this would call an API to save the message
-      setNewMessage("");
+    if (newStatus === "IN_PROGRESS") {
+      setInProgressLoading(true);
+    } else if (newStatus === "COMPLETED") {
+      setCompleteLoading(true);
     }
+    taskService
+      .professionalUpdateTask(taskId, newStatus)
+      .then((response) => {
+        if (response.statusCode === 201) {
+          toast.success("Status updated successfully");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        extractErrorMessage(error);
+        toast.error(extractErrorMessage(error));
+        setChangeStatusLoading(false);
+      })
+      .finally(() => {
+        setInProgressLoading(false);
+        setCompleteLoading(false);
+      });
   };
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
-    setUploadedFiles([
-      ...uploadedFiles,
-      ...files.map((file) => ({
-        name: file.name,
-        type: file.type.split("/")[1] || "file",
-        size: (file.size / 1024).toFixed(2) + " KB",
-        file,
-      })),
-    ]);
+    setUploadedFiles([...uploadedFiles, ...files]);
   };
 
-  const handleCompleteWork = () => {
-    onComplete({
-      notes,
-      files: uploadedFiles,
+  const handleSubmitDocument = () => {
+    setUploadFileLoading(true);
+    setError("");
+
+    const formData = new FormData();
+
+    const data = {
+      documents: uploadedFiles,
+    };
+
+    // Check if files exist and append them directly to formData
+    if (data.documents && Array.isArray(data.documents)) {
+      data.documents.forEach((file) => {
+        formData.append("documents", file);
+      });
+    }
+
+    // Append other fields
+    Object.keys(data).forEach((key) => {
+      if (key !== "documents") {
+        formData.append(key, data[key]);
+      }
     });
+
+    taskService
+      .professionalUploadFinalDocuments(taskId, formData)
+      .then((response) => {
+        if (response.statusCode === 201) {
+          console.log("Upload response:", response);
+          toast.success("Documents uploaded successfully!");
+          setUploadedFiles([]);
+          setUploadFileLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error uploading documents:", error);
+        setUploadFileLoading(false);
+
+        toast.error(extractErrorMessage(error));
+      })
+      .finally(() => {
+        setUploadFileLoading(false);
+      });
   };
+
+  // const handleCompleteWork = () => {
+  //   onComplete({
+  //     notes,
+  //     files: uploadedFiles,
+  //   });
+  // };
 
   const handleRejectWork = () => {
     onReject(rejectionReason);
@@ -150,6 +211,24 @@ const ProfessionalWork = () => {
     else return (bytes / 1048576).toFixed(1) + " MB";
   };
 
+  const handleDeleteDocument = (documentId) => () => {
+    setDeletingDocId(documentId);
+    taskService
+      .deleteDocument(documentId)
+      .then((response) => {
+        if (response.statusCode === 200) {
+          toast.success("Document deleted successfully");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(extractErrorMessage(error));
+      })
+      .finally(() => {
+        setDeletingDocId(null);
+      });
+  };
+
   return (
     <Container>
       <div className="bg-white rounded-xl my-2 shadow-lg overflow-hidden h-full flex flex-col text-gray-800">
@@ -157,6 +236,12 @@ const ProfessionalWork = () => {
         <div className="bg-gradient-to-r from-[#FF6F00] to-[#FF8F00] p-4 text-white">
           <div className="flex justify-between items-start">
             <div>
+              <span
+                onClick={() => navigate(-1)}
+                className="flex items-center text-gray-800 hover:text-gray-900 pb-2"
+              >
+                <FaArrowLeft className="mr-2 " /> Go back
+              </span>
               <h2 className="text-xl font-bold">{customer?.name}</h2>
               <div className="flex items-center mt-1 text-orange-100">
                 <FaBuilding className="mr-2" />
@@ -169,9 +254,9 @@ const ProfessionalWork = () => {
                 <FaRegCalendarAlt className="inline mr-1" />
                 Assigned: {formatDate(assignedAt)}
               </span>
-              <span className="text-sm bg-white text-gray-700 bg-opacity-20 px-2 py-1 rounded">
+              {/* <span className="text-sm bg-white text-gray-700 bg-opacity-20 px-2 py-1 rounded">
                 ID: {taskData?._id?.slice(-6).toUpperCase()}
-              </span>
+              </span> */}
             </div>
           </div>
         </div>
@@ -182,7 +267,8 @@ const ProfessionalWork = () => {
           <p className="flex items-start p-3 mb-4 text-blue-800 bg-blue-100 rounded-lg shadow-sm">
             <FaInfoCircle className="w-5 h-5 mr-2 mt-1 text-blue-600" />
             Keep updating the task status to keep your customer informed and
-            engaged!
+            engaged! You can upload customer's final document after "Completed"
+            status.
           </p>
 
           <div className="flex items-center justify-between">
@@ -198,24 +284,20 @@ const ProfessionalWork = () => {
               </button>
               <button
                 onClick={() => handleStatusChange("IN_PROGRESS")}
-                className={`px-3 py-1 rounded-md text-sm flex items-center cursor-pointer ${
+                className={`px-3 py-1 rounded-md text-sm flex items-center cursor-pointer min-w-8 ${
                   status === "IN_PROGRESS"
                     ? "bg-[#FF6F00] text-white"
                     : "bg-white text-gray-700 border"
                 }`}
               >
-                <FaClock className="mr-1" /> In Progress
+                <FaClock className="mr-1" />{" "}
+                {inProgressLoading ? (
+                  <img src={spinner} className="h-4" />
+                ) : (
+                  "In Progress"
+                )}
               </button>
-              {/* <button
-                onClick={() => handleStatusChange("DOCUMENTS_UPLOADED")}
-                className={`px-3 py-1 rounded-md text-sm flex items-center curso ${
-                  status === "DOCUMENTS_UPLOADED"
-                    ? "bg-[#FF6F00] text-white"
-                    : "bg-white text-gray-700 border"
-                }`}
-              >
-                <FaFileUpload className="mr-1" /> Docs Uploaded
-              </button> */}
+
               <button
                 onClick={() => handleStatusChange("COMPLETED")}
                 className={`px-3 py-1 rounded-md text-sm flex items-center cursor-pointer ${
@@ -224,7 +306,12 @@ const ProfessionalWork = () => {
                     : "bg-white text-gray-700 border"
                 }`}
               >
-                <FaCheckCircle className="mr-1" /> Completed
+                <FaCheckCircle className="mr-1" />{" "}
+                {completeLoading ? (
+                  <img src={spinner} className="h-4" />
+                ) : (
+                  "Completed"
+                )}
               </button>
             </div>
             <div className="flex space-x-2">
@@ -237,7 +324,7 @@ const ProfessionalWork = () => {
                 </button>
               )}
               <button
-                onClick={handleCompleteWork}
+                // onClick={handleCompleteWork}
                 className={`px-4 py-1 rounded-md text-sm flex items-center ${
                   status === "COMPLETED"
                     ? "bg-green-600 text-white"
@@ -293,124 +380,236 @@ const ProfessionalWork = () => {
             <div className="flex-1 overflow-auto p-4">
               {activeTab === "documents" && (
                 <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-bold text-lg">
-                      Client Documents ({documents?.length})
-                    </h3>
-                    <div className="relative w-64">
-                      <input
-                        type="text"
-                        placeholder="Search documents..."
-                        className="w-full pl-8 pr-4 py-2 border rounded-md"
-                      />
-                      <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-lg">
+                        Client Documents (
+                        {
+                          documents?.filter(
+                            (doc) => doc.uploadedByRole === "Customer"
+                          )?.length
+                        }
+                        )
+                      </h3>
+                      <div className="relative w-64">
+                        <input
+                          type="text"
+                          placeholder="Search documents..."
+                          className="w-full pl-8 pr-4 py-2 border rounded-md"
+                        />
+                        <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                      </div>
                     </div>
-                  </div>
 
-                  {loading ? (
-                    <img className="mx-auto" src={spinner} alt="Loading" />
-                  ) : documents?.length > 0 ? (
-                    <div className="space-y-3 mb-6">
-                      {documents?.map((doc, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center p-4 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition duration-300"
-                        >
-                          {getFileIcon(doc?.fileType)}
-                          <div className="flex-1 ml-4 overflow-hidden">
-                            <p className="font-semibold text-gray-800 truncate">
-                              {doc?.name}
-                            </p>
-                            <div className="flex justify-between text-sm text-gray-500">
-                              <span>
-                                {doc?.fileType?.split("/")[1]?.toUpperCase()} •{" "}
-                                {formatFileSize(doc?.fileSize)}
-                              </span>
-                              <span>Uploaded {formatDate(doc?.createdAt)}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center space-x-3 ml-4">
-                            {/* View Button */}
-                            <a
-                              href={doc?.fileUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-3 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 transition"
+                    {loading ? (
+                      <img className="mx-auto" src={spinner} alt="Loading" />
+                    ) : documents.filter(
+                        (doc) => doc.uploadedByRole === "Customer"
+                      )?.length > 0 ? (
+                      <div className="space-y-3 mb-6">
+                        {documents
+                          .filter((doc) => doc.uploadedByRole === "Customer")
+                          ?.map((doc, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center p-4 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition duration-300"
                             >
-                              View
-                            </a>
+                              {getFileIcon(doc?.fileType)}
+                              <div className="flex-1 ml-4 overflow-hidden">
+                                <p className="font-semibold text-gray-800 truncate">
+                                  {doc?.name}
+                                </p>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                  <span>
+                                    {doc?.fileType
+                                      ?.split("/")[1]
+                                      ?.toUpperCase()}{" "}
+                                    • {formatFileSize(doc?.fileSize)}
+                                  </span>
+                                  <span>
+                                    Uploaded {formatDate(doc?.createdAt)}
+                                  </span>
+                                </div>
+                              </div>
 
-                            {/* Download Button */}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No documents uploaded by client yet.
-                    </div>
-                  )}
+                              <div className="flex items-center space-x-3 ml-4">
+                                {/* View Button */}
+                                <a
+                                  href={doc?.fileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 transition"
+                                >
+                                  View
+                                </a>
 
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="font-bold text-lg">Your Work Files</h3>
+                                {/* Download Button */}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        No documents uploaded by client yet.
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-lg">
+                        Documents submitted by you to Client (
+                        {
+                          documents?.filter(
+                            (doc) => doc.uploadedByRole === "Professional"
+                          )?.length
+                        }
+                        )
+                      </h3>
+                    </div>
+
+                    {loading ? (
+                      <img className="mx-auto" src={spinner} alt="Loading" />
+                    ) : documents?.filter(
+                        (doc) => doc.uploadedByRole === "Professional"
+                      )?.length > 0 ? (
+                      <div className="space-y-3 mb-6">
+                        {documents
+                          .filter(
+                            (doc) => doc.uploadedByRole === "Professional"
+                          )
+                          ?.map((doc, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center p-4 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition duration-300"
+                            >
+                              {getFileIcon(doc?.fileType)}
+                              <div className="flex-1 ml-4 overflow-hidden">
+                                <p className="font-semibold text-gray-800 truncate">
+                                  {doc?.name}
+                                </p>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                  <span>
+                                    {doc?.fileType
+                                      ?.split("/")[1]
+                                      ?.toUpperCase()}{" "}
+                                    • {formatFileSize(doc?.fileSize)}
+                                  </span>
+                                  <span>
+                                    Uploaded {formatDate(doc?.createdAt)}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center space-x-3 ml-4">
+                                {/* View Button */}
+                                <a
+                                  href={doc?.fileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1 text-sm font-medium text-orange-600 hover:text-orange-700 transition"
+                                >
+                                  View
+                                </a>
+                                <button
+                                  onClick={handleDeleteDocument(doc?._id)}
+                                >
+                                  {deletingDocId === doc?._id ? (
+                                    <img className="h-5" src={spinner} />
+                                  ) : (
+                                    <FaTrashAlt className="text-red-500 hover:text-red-700 cursor-pointer text-sm" />
+                                  )}
+                                </button>
+
+                                {/* Download Button */}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        No documents submitted by you to client yet.
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-bold text-lg">Your Work Files</h3>
+                      {uploadedFiles?.length > 0 && (
+                        <button
+                          onClick={() => setUploadedFiles([])}
+                          className="text-sm text-red-500 hover:text-red-700"
+                        >
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mb-4 hover:border-[#FF6F00] transition-colors">
+                      <label className="cursor-pointer flex flex-col items-center">
+                        <FaFileUpload className="text-[#FF6F00] text-3xl mb-2" />
+                        <p className="text-sm text-gray-600 mb-1">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          PDF, Images, Word, Excel (Max 10MB each)
+                        </p>
+                        <input
+                          type="file"
+                          className="hidden"
+                          multiple
+                          onChange={handleFileUpload}
+                          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                        />
+                      </label>
+                    </div>
+
                     {uploadedFiles?.length > 0 && (
-                      <button
-                        onClick={() => setUploadedFiles([])}
-                        className="text-sm text-red-500 hover:text-red-700"
-                      >
-                        Clear All
-                      </button>
+                      <div className="space-y-3">
+                        {uploadedFiles.map((file, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center p-3 bg-gray-50 rounded-lg border hover:shadow"
+                          >
+                            {getFileIcon(file.type)}
+                            <div className="flex-1 ml-3">
+                              <p className="font-medium">{file.name}</p>
+                              <p className="text-sm text-gray-500">
+                                {file.type.toUpperCase()} • {file.size}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                const newFiles = [...uploadedFiles];
+                                newFiles.splice(index, 1);
+                                setUploadedFiles(newFiles);
+                              }}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
-
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mb-4 hover:border-[#FF6F00] transition-colors">
-                    <label className="cursor-pointer flex flex-col items-center">
-                      <FaFileUpload className="text-[#FF6F00] text-3xl mb-2" />
-                      <p className="text-sm text-gray-600 mb-1">
-                        Click to upload or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        PDF, Images, Word, Excel (Max 10MB each)
-                      </p>
-                      <input
-                        type="file"
-                        className="hidden"
-                        multiple
-                        onChange={handleFileUpload}
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                      />
-                    </label>
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      onClick={handleSubmitDocument}
+                      disabled={uploadedFiles.length === 0}
+                      className={`px-8 py-2.5 flex items-center justify-center ${
+                        uploadedFiles.length === 0
+                          ? "bg-orange-300 cursor-not-allowed"
+                          : "bg-orange-600 hover:bg-orange-700"
+                      }`}
+                    >
+                      {uploadFileLoading && (
+                        <img
+                          className="mr-2 h-6 inline"
+                          src={spinner}
+                          alt="Loading"
+                        />
+                      )}{" "}
+                      Submit documents
+                    </Button>
                   </div>
-
-                  {uploadedFiles?.length > 0 && (
-                    <div className="space-y-3">
-                      {uploadedFiles.map((file, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center p-3 bg-gray-50 rounded-lg border hover:shadow"
-                        >
-                          {getFileIcon(file.type)}
-                          <div className="flex-1 ml-3">
-                            <p className="font-medium">{file.name}</p>
-                            <p className="text-sm text-gray-500">
-                              {file.type.toUpperCase()} • {file.size}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => {
-                              const newFiles = [...uploadedFiles];
-                              newFiles.splice(index, 1);
-                              setUploadedFiles(newFiles);
-                            }}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -560,7 +759,7 @@ const ProfessionalWork = () => {
             </div>
 
             {/* Work Notes */}
-            <div className="p-4 border-b border-gray-200">
+            {/* <div className="p-4 border-b border-gray-200">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-bold text-lg">Work Notes</h3>
                 <button
@@ -579,10 +778,10 @@ const ProfessionalWork = () => {
               <div className="mt-2 text-xs text-gray-500">
                 These notes are private and not visible to the client.
               </div>
-            </div>
+            </div> */}
 
             {/* Communication */}
-            <div className="flex-1 overflow-auto p-4 border-b border-gray-200">
+            {/* <div className="flex-1 overflow-auto p-4 border-b border-gray-200">
               <h3 className="font-bold text-lg mb-3">Communication</h3>
               <div className="space-y-4">
                 {updates?.map((update, index) => (
@@ -602,10 +801,10 @@ const ProfessionalWork = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Message Input */}
-            <div className="p-3 bg-gray-50">
+            {/* <div className="p-3 bg-gray-50">
               <div className="flex">
                 <input
                   type="text"
@@ -634,7 +833,7 @@ const ProfessionalWork = () => {
                   />
                 </label>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

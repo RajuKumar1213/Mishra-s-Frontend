@@ -90,15 +90,10 @@ export class TaskService {
     }
   }
 
-  async professionalUpdateTask(
-    taskId,
-    newStatus,
-    message = "Your documents are being viewed by the professional."
-  ) {
+  async professionalUpdateTask(taskId, newStatus) {
     try {
-      const response = await api.post(`/task/professional/${taskId}/update`, {
+      const response = await api.post(`/task/professional/${taskId}/updates`, {
         newStatus,
-        message,
       });
       return response.data;
     } catch (error) {
@@ -121,9 +116,18 @@ export class TaskService {
   async professionalUploadFinalDocuments(taskId, formData) {
     try {
       const response = await api.post(
-        `/task/${taskId}/prof-upload-final`,
+        `/task/professional/${taskId}/upload-document`,
         formData
       );
+      return response.data;
+    } catch (error) {
+      this._handleError("professional uploading final documents", error);
+    }
+  }
+
+  async deleteDocument(taskId) {
+    try {
+      const response = await api.delete(`/task/professional/${taskId}/delete`);
       return response.data;
     } catch (error) {
       this._handleError("professional uploading final documents", error);

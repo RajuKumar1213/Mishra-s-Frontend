@@ -40,7 +40,6 @@ const authSlice = createSlice({
       state.userData = null;
     },
     syncAuthState: (state, action) => {
-      console.log(action.payload);
       // If we have a token, set authenticated
       if (action.payload?.token) {
         state.status = true;
