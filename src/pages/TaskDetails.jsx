@@ -109,11 +109,35 @@ function TaskDetails() {
               Back to requests
             </button>
             <div className="flex items-center">
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
+              {/* <span
+                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusInfo?.color}`}
               >
-                {statusInfo.icon}
-                {statusInfo.text}
+                {statusInfo?.icon}
+                {statusInfo?.text}
+              </span> */}
+              <span
+                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  ${
+                    statusInfo?.text === "ASSIGNED"
+                      ? "bg-yellow-200 text-yellow-900" // 🌟 Yellow, more urgent
+                      : statusInfo?.text === "IN_PROGRESS"
+                      ? "bg-blue-200 text-blue-900" // 🔵 Stronger blue
+                      : statusInfo?.text === "COMPLETED"
+                      ? "bg-emerald-200 text-emerald-900" // ✅ Rich emerald green (not basic green)
+                      : "bg-slate-100 text-slate-800" // 🧹 Cleaner, modern gray
+                  }
+
+                  `}
+              >
+                {statusInfo?.text === "ASSIGNED"
+                  ? "Assigned"
+                  : statusInfo?.text === "IN_PROGRESS"
+                  ? "In Progress"
+                  : statusInfo?.text === "COMPLETED"
+                  ? "Completed"
+                  : statusInfo?.text === "DOCUMENT_UPLOADED"
+                  ? "Document Uploaded"
+                  : ""}
               </span>
             </div>
           </div>

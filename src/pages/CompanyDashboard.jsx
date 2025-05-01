@@ -253,7 +253,7 @@ const CompanyDashboard = () => {
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        <main className="flex-1 overflow-y-auto p-2 md:p-4 bg-gray-50">
           {activeTab === "dashboard" && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -325,7 +325,7 @@ const CompanyDashboard = () => {
               </div>
 
               {/* Recent Assignments */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-2 md:p-6 mb-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold">Recent Assignments</h2>
                   <button
