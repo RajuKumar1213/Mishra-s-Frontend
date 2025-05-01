@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { FaUserCog, FaChartLine, FaTrophy } from "react-icons/fa";
 
 const KeyFeatures = () => {
   const fadeIn = {
@@ -12,12 +13,34 @@ const KeyFeatures = () => {
   };
 
   const cardHover = {
-    hover: { scale: 1.05, rotate: 2, transition: { duration: 0.3 } },
+    hover: { 
+      scale: 1.03, 
+      boxShadow: "0 10px 20px rgba(255, 111, 0, 0.2)",
+      transition: { duration: 0.3 },
+    },
   };
+
+  const features = [
+    {
+      title: "State-wise CA/CS Login",
+      desc: "Region-specific portals for CAs and CSs with secure, role-based access.",
+      icon: <FaUserCog className="text-3xl sm:text-4xl text-orange-500" />,
+    },
+    {
+      title: "Customer Progress Tracking",
+      desc: "Real-time updates for customers to track their work at every stage.",
+      icon: <FaChartLine className="text-3xl sm:text-4xl text-orange-500" />,
+    },
+    {
+      title: "CA Ranking System",
+      desc: "Smart ranking of CAs by performance for efficient task assignment.",
+      icon: <FaTrophy className="text-3xl sm:text-4xl text-orange-500" />,
+    },
+  ];
 
   return (
     <motion.section
-      className="bg-gradient-to-b from-[#FEFCE8] to-[#10B981]/10 py-12 px-4 md:px-6"
+      className="bg-gradient-to-b from-white to-orange-50/50 py-12 sm:py-16 md:py-20 px-4 sm:px-6"
       variants={fadeIn}
       initial="initial"
       whileInView="animate"
@@ -25,56 +48,16 @@ const KeyFeatures = () => {
     >
       <div className="max-w-7xl mx-auto text-center">
         <motion.h3
-          className="text-4xl font-bold text-[#374151] mb-12 font-poppins"
+          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 mb-10 sm:mb-12"
           variants={fadeIn}
         >
-          Key Features
+          Why Choose Us
         </motion.h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              title: "State-wise CA/CS Login",
-              desc: "Separate portals for every CA and CS based on their region. Role-specific access only.",
-              icon: (
-                <svg
-                  className="w-10 h-10 text-[#10B981] mx-auto mb-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 0112zm-2-5H6v2h2v2h2v-2h2v-2h-2V7H8v4z" />
-                </svg>
-              ),
-            },
-            {
-              title: "Customer Progress Tracking",
-              desc: "Customers can view real-time status updates as their work progresses through various stages.",
-              icon: (
-                <svg
-                  className="w-10 h-10 text-[#10B981] mx-auto mb-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M3 3a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V3zm2 0v14h10V3H5zm2 2h6v2H7V5zm0 4h6v2H7V9zm0 4h4v2H7v-2z" />
-                </svg>
-              ),
-            },
-            {
-              title: "CA Ranking System",
-              desc: "Automatically rank CAs based on performance. Assign tasks intelligently and efficiently.",
-              icon: (
-                <svg
-                  className="w-10 h-10 text-[#10B981] mx-auto mb-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 0112zm0-8l3 3h-2v4H9v-4H7l3-3z" />
-                </svg>
-              ),
-            },
-          ].map((feature, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+          {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="bg-white/50 backdrop-blur-md p-8 rounded-2xl shadow-lg border border-[#10B981]/20 hover:border-[#F97316]/50 transition-all"
+              className="bg-white/80 backdrop-blur-lg p-6 sm:p-8 rounded-xl shadow-md border border-gray-100 hover:border-orange-200 hover:bg-orange-50 transition-all duration-200"
               variants={cardHover}
               whileHover="hover"
               initial={{ opacity: 0, y: 20 }}
@@ -82,11 +65,13 @@ const KeyFeatures = () => {
               transition={{ delay: index * 0.2, duration: 0.6 }}
               viewport={{ once: true }}
             >
-              {feature.icon}
-              <h4 className="text-xl font-semibold text-[#374151] mb-2 font-poppins">
+              <div className="mb-4 sm:mb-6 flex justify-center">
+                {feature.icon}
+              </div>
+              <h4 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">
                 {feature.title}
               </h4>
-              <p className="text-sm text-[#374151] font-inter">
+              <p className="text-sm sm:text-base text-gray-600 line-clamp-3">
                 {feature.desc}
               </p>
             </motion.div>

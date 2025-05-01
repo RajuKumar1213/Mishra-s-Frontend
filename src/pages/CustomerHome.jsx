@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
 import { FiMessageSquare } from "react-icons/fi";
 import { FaRegStar, FaStar } from "react-icons/fa";
@@ -11,16 +10,6 @@ import { useSelector } from "react-redux";
 import CustomerTaskHistory from "../components/CustomerTaskHistory";
 
 const CustomerHome = () => {
-  const [customerData, setCustomerData] = useState({
-    name: "Rajiv",
-    email: "rajuvis@gmail.com",
-    phone: "9546953892",
-    address: "Daltonganj, Palamu, Jharkhand",
-    state: "Jharkhand",
-    pinCode: "822123",
-    profilePicture:
-      "https://res.cloudinary.com/dykqvsfd1/image/upload/v1745212097/zypdgohz4eqoe9iqm1xt.jpg",
-  });
   const userData = useSelector((state) => state.auth.userData);
   const [selectedService, setSelectedService] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -47,7 +36,6 @@ const CustomerHome = () => {
         // const response = await customerService.getProfile();
         // setCustomerData(response.data);
 
-        // Get recommended services based on customer profile
         const recServices = [
           "GST Registration",
           "Private Limited Registration",
@@ -106,7 +94,7 @@ const CustomerHome = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Profile Sidebar */}
           <div className="lg:col-span-1">
@@ -158,40 +146,15 @@ const CustomerHome = () => {
                 </div>
               </div>
             </div>
-
-            {/* Recommended Services */}
-            {/* <div className="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="font-semibold text-gray-900 flex items-center">
-                  <RiServiceLine className="mr-2 text-[#FF6F00]" />
-                  Recommended For You
-                </h3>
-              </div>
-              <div className="p-4 space-y-3">
-                {recommendedServices.map((service, index) => (
-                  <div
-                    key={index}
-                    className="p-3 bg-gray-50 rounded-lg hover:bg-orange-50 cursor-pointer transition-colors"
-                    onClick={() => setSelectedService(service)}
-                  >
-                    <p className="font-medium text-gray-800">{service}</p>
-                    <div className="flex items-center mt-1 text-sm text-gray-500">
-                      <div className="flex mr-2">{renderStars(4.5)}</div>
-                      <span>120+ requests</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div> */}
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Tabs */}
-            <div className="flex border-b border-gray-200">
+            <div className="flex border-b border-gray-200 overflow-x-auto">
               <button
                 onClick={() => setActiveTab("services")}
-                className={`px-4 py-3 font-medium ${
+                className={`px-4 py-3 font-medium whitespace-nowrap ${
                   activeTab === "services"
                     ? "text-[#FF6F00] border-b-2 border-[#FF6F00]"
                     : "text-gray-600 hover:text-gray-900"
@@ -201,7 +164,7 @@ const CustomerHome = () => {
               </button>
               <button
                 onClick={() => setActiveTab("requests")}
-                className={`px-4 py-3 font-medium ${
+                className={`px-4 py-3 font-medium whitespace-nowrap ${
                   activeTab === "requests"
                     ? "text-[#FF6F00] border-b-2 border-[#FF6F00]"
                     : "text-gray-600 hover:text-gray-900"
@@ -211,7 +174,7 @@ const CustomerHome = () => {
               </button>
               <button
                 onClick={() => setActiveTab("history")}
-                className={`px-4 py-3 font-medium ${
+                className={`px-4 py-3 font-medium whitespace-nowrap ${
                   activeTab === "history"
                     ? "text-[#FF6F00] border-b-2 border-[#FF6F00]"
                     : "text-gray-600 hover:text-gray-900"
@@ -221,19 +184,13 @@ const CustomerHome = () => {
               </button>
             </div>
 
-            {/* Services Content */}
+            {/* Tab Content */}
             {activeTab === "services" && <ServicesList />}
-
-            {/* My Requests Content */}
             {activeTab === "requests" && <MyRequest />}
-
-            {/* History Content */}
             {activeTab === "history" && <CustomerTaskHistory />}
           </div>
         </div>
       </main>
-
-      {/* WhatsApp Floating Button */}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import Container from "./Container";
 import KeyFeatures from "./KeyFeatures";
-import { Link } from "react-router-dom";
 import CompanyTopServices from "./CompanyTopServices ";
 
 const Home = () => {
@@ -10,6 +10,7 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Animation variants
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: {
@@ -19,41 +20,46 @@ const Home = () => {
     },
   };
 
-  const cardHover = {
-    hover: { scale: 1.05, rotate: 1, transition: { duration: 0.3 } },
-  };
-
   const heroVariants = {
     initial: { opacity: 0 },
     animate: {
       opacity: 1,
-      transition: { duration: 1.5, ease: "easeOut" },
+      transition: { duration: 1.2, ease: "easeOut" },
+    },
+  };
+
+  const cardHover = {
+    hover: { 
+      scale: 1.03, 
+      boxShadow: "0 10px 20px rgba(255, 111, 0, 0.2)",
+      transition: { duration: 0.3 },
     },
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col relative overflow-hidden">
-      {/* Hero Section with Full HD Background */}
+    <div className="bg-gray-50 min-h-screen flex flex-col relative overflow-hidden">
+      {/* Hero Section */}
       <motion.section
         className="relative h-screen w-full flex items-center justify-center overflow-hidden"
         initial="initial"
         animate="animate"
         variants={heroVariants}
       >
-        {/* Full HD Background Image with overlay */}
-        <div className="absolute inset-0 bg-black/80 z-0" />
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-0" />
         <img
-          src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80"
-          alt="Financial Planning"
+          src="https://images.unsplash.com/photo-1664575602276-acd390ffa881?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+          alt="Modern Financial Workspace"
           className="absolute inset-0 w-full h-full object-cover z-0"
+          loading="lazy"
         />
 
         {/* Hero Content */}
         <Container width="max-w-7xl" className="relative z-10 px-4 sm:px-6">
-          <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+          <div className="flex flex-col lg:flex-row items-center gap-8 sm:gap-12">
             {/* Text Content */}
             <motion.div
-              className="flex-1 text-white"
+              className="flex-1 text-white text-center lg:text-left"
               initial={{ opacity: 0, x: -50 }}
               animate={{
                 opacity: 1,
@@ -61,45 +67,50 @@ const Home = () => {
                 transition: { duration: 0.8, delay: 0.3 },
               }}
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-center lg:text-left font-bold mb-4 sm:mb-6 leading-tight">
-                <span className="block">Expert Financial</span>
-                <span className="text-orange-400">Solutions</span> Tailored For
-                You
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 leading-tight">
+                <span className="block">Empower Your</span>
+                <span className="text-orange-400">Financial Future</span>
               </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-center lg:text-left mb-6 sm:mb-8 max-w-2xl opacity-90 text-gray-800 font-bold">
-                Partner with India's top CA & CS professionals for tax
-                optimization, compliance excellence, and strategic wealth
-                growth.
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0 opacity-90">
+                Connect with India's top CA & CS experts for seamless tax planning, compliance, and wealth growth.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
                   to="/get-started"
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 sm:py-4 px-8 sm:px-10 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-medium text-base sm:text-lg border-2 border-orange-400/50 text-center"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 sm:py-4 px-8 sm:px-10 rounded-xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 border-2 border-orange-400/50"
                 >
-                  Get Started Now
+                  Start Now
+                </Link>
+                <Link
+                  to="/services"
+                  className="bg-transparent border-2 border-orange-400 hover:bg-orange-400/10 text-orange-400 py-3 sm:py-4 px-8 sm:px-10 rounded-xl font-semibold text-base sm:text-lg hover:shadow-md transition-all duration-200"
+                >
+                  Explore Services
                 </Link>
               </div>
             </motion.div>
 
             {/* Stats Cards */}
             <motion.div
-              className="flex-1 grid grid-cols-2 gap-3 sm:gap-6 mt-6 lg:mt-0"
+              className="flex-1 grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-6 lg:mt-0"
               initial={{ opacity: 0, y: 50 }}
               animate={{
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.8, delay: 0.6 },
+                transition: { duration: 0.8, delay: 0.5 },
               }}
             >
               {[
-                { value: "500+", label: "Certified Professionals" },
-                { value: "10K+", label: "Satisfied Clients" },
-                { value: "24/7", label: "Expert Support" },
-                { value: "99%", label: "Success Rate" },
+                { value: "500+", label: "Expert Professionals" },
+                { value: "10K+", label: "Happy Clients" },
+                { value: "24/7", label: "Support Available" },
+                { value: "99%", label: "Client Satisfaction" },
               ].map((stat, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className="bg-black/10 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/20 hover:border-orange-400/50 transition-all text-center"
+                  className="bg-white/10 backdrop-blur-lg p-4 sm:p-5 rounded-xl border border-white/20 hover:border-orange-400/50 transition-all text-center"
+                  variants={cardHover}
+                  whileHover="hover"
                 >
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-400 mb-1 sm:mb-2">
                     {stat.value}
@@ -107,7 +118,7 @@ const Home = () => {
                   <p className="text-white/90 text-sm sm:text-base">
                     {stat.label}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </div>
@@ -115,7 +126,7 @@ const Home = () => {
 
         {/* Scroll Indicator */}
         <motion.div
-          className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2"
           animate={{
             y: [0, 15, 0],
             transition: {
@@ -125,7 +136,7 @@ const Home = () => {
             },
           }}
         >
-          <div className="w-6 h-10 sm:w-8 sm:h-14 rounded-full border-2 border-orange-400 flex justify-center p-1">
+          <div className="w-6 h-10 sm:w-8 sm:h-12 rounded-full border-2 border-orange-400 flex justify-center p-1">
             <motion.div
               className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-orange-400 rounded-full"
               animate={{
@@ -140,61 +151,73 @@ const Home = () => {
           </div>
         </motion.div>
       </motion.section>
-      // company top services
-      <CompanyTopServices />
-      {/* Key Features */}
-      <KeyFeatures />
+
+      {/* Top Services Section */}
+      <motion.section
+        className="py-12 sm:py-16 md:py-20 bg-white"
+        variants={fadeIn}
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true }}
+      >
+        <CompanyTopServices />
+      </motion.section>
+
+      {/* Key Features Section */}
+      
+        <KeyFeatures />
+     
+
       {/* Testimonial Section */}
       <motion.section
-        className="py-10 sm:py-14 md:py-20 bg-orange-600 text-white"
+        className="py-12 sm:py-16 md:py-20 bg-gradient-to-r from-orange-600 to-orange-700 text-white"
         variants={fadeIn}
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
       >
         <Container width="max-w-7xl" className="px-4 sm:px-6">
-          <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">
-              Trusted by Businesses & Individuals
+          <div className="text-center mb-10 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+              Loved by Businesses & Individuals
             </h2>
-            <p className="text-lg sm:text-xl text-orange-100 max-w-2xl mx-auto">
-              Don't just take our word for it - hear what our clients say
+            <p className="text-base sm:text-lg md:text-xl text-orange-100 max-w-2xl mx-auto">
+              Hear from our clients who trust us with their financial success.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
-                quote:
-                  "The tax planning strategies saved us over 30% in liabilities. Absolutely phenomenal service!",
+                quote: "Their tax strategies slashed our liabilities by 35%. World-class service!",
                 author: "Rajesh K., Startup Founder",
                 role: "Tech Startup",
                 rating: 5,
               },
               {
-                quote:
-                  "Our company incorporation was completed in record time with zero paperwork hassle.",
+                quote: "Company incorporation done in days with zero stress. Highly recommend!",
                 author: "Priya M., Entrepreneur",
                 role: "E-commerce Business",
                 rating: 5,
               },
               {
-                quote:
-                  "Continuous support even after compliance work. Truly a partner in our growth journey.",
+                quote: "Ongoing support that feels like a true partnership. They’re the best!",
                 author: "Amit S., CFO",
                 role: "Manufacturing Company",
                 rating: 5,
               },
             ].map((testimonial, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-white/20 hover:border-orange-300 transition-all"
+                className="bg-white/10 backdrop-blur-lg p-6 sm:p-8 rounded-xl border border-white/20 hover:border-orange-300 transition-all"
+                variants={cardHover}
+                whileHover="hover"
               >
                 <div className="flex mb-3 sm:mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <svg
                       key={i}
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-orange-300"
+                      className="w-4 sm:w-5 h-4 sm:h-5 text-orange-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -202,48 +225,48 @@ const Home = () => {
                     </svg>
                   ))}
                 </div>
-                <p className="text-base sm:text-lg italic mb-4 sm:mb-6">
+                <p className="text-sm sm:text-base md:text-lg italic mb-4 sm:mb-6 text-orange-100">
                   "{testimonial.quote}"
                 </p>
                 <div>
-                  <p className="font-bold">{testimonial.author}</p>
+                  <p className="font-semibold text-white">{testimonial.author}</p>
                   <p className="text-orange-200 text-sm sm:text-base">
                     {testimonial.role}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </Container>
       </motion.section>
+
       {/* CTA Section */}
       <motion.section
-        className="py-16 sm:py-20 md:py-24 bg-gradient-to-r from-orange-500 to-orange-600 text-white"
+        className="py-12 sm:py-16 md:py-20 bg-white"
         variants={fadeIn}
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
       >
         <Container width="max-w-4xl" className="text-center px-4 sm:px-6">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6">
-            Ready to Transform Your Financial Strategy?
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6">
+            Transform Your Financial Future Today
           </h2>
-          <p className="text-lg sm:text-xl mb-8 sm:mb-10 max-w-2xl mx-auto">
-            Join thousands of satisfied clients who trust us with their
-            financial success.
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto">
+            Join thousands of clients who’ve unlocked their financial potential with our expert guidance.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/get-started"
-              className="bg-white text-orange-600 hover:bg-gray-100 py-3 sm:py-4 px-8 sm:px-12 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-bold text-base sm:text-lg"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 sm:py-4 px-8 sm:px-12 rounded-xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
             >
-              Get Started Today
+              Get Started
             </Link>
             <a
               href="#consultation"
-              className="bg-transparent border-2 border-white hover:bg-white/10 py-3 sm:py-4 px-8 sm:px-12 rounded-xl transition-all font-bold text-base sm:text-lg hover:shadow-md"
+              className="bg-transparent border-2 border-orange-500 hover:bg-orange-500/10 text-orange-500 py-3 sm:py-4 px-8 sm:px-12 rounded-xl font-semibold text-base sm:text-lg hover:shadow-md transition-all duration-200"
             >
-              Speak to an Expert
+              Book a Consultation
             </a>
           </div>
         </Container>

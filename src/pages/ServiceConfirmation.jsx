@@ -20,9 +20,6 @@ function ServiceConfirmation() {
   const taskId = location.state?.taskId;
   const [task, setTask] = useState(null);
 
-  // Sample data - in a real app this would come from your state or API
-
-  // fetching task details
   useEffect(() => {
     taskService
       .getCustomerTaskById(taskId)
@@ -40,81 +37,57 @@ function ServiceConfirmation() {
     window.scrollTo(0, 0);
   }, []);
 
-  console.log(task);
-
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 text-gray-600">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-white rounded-xl shadow-lg overflow-hidden"
+        className="bg-white rounded-2xl shadow-sm overflow-hidden"
       >
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-8 text-white">
-          <div className="flex items-center justify-center mb-4">
-            <FiCheckCircle className="h-12 w-12" />
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 sm:p-8 text-white">
+          <div className="flex items-center justify-center mb-3">
+            <FiCheckCircle className="h-10 w-10 sm:h-12 sm:w-12" />
           </div>
-          <h1 className="text-3xl font-bold text-center mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2">
             Service Request Confirmed!
           </h1>
-          <p className="text-center text-orange-100 max-w-2xl mx-auto">
+          <p className="text-center text-orange-100 text-sm sm:text-base max-w-xl mx-auto">
             Your{" "}
-            {
-              <span className="font-medium text-gray-600">
-                {task?.service?.name}
-              </span>
-            }{" "}
+            <span className="font-medium text-white">
+              {task?.service?.name}
+            </span>{" "}
             request has been successfully submitted. Our team will review your
             documents and get back to you shortly.
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="p-8">
-          {/* Reference Card */}
-          {/* <div className="bg-orange-50 border border-orange-100 rounded-lg p-6 mb-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <div className="mb-4 md:mb-0">
-                <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                  Reference Number
-                </h3>
-                <p className="text-2xl font-bold text-orange-600">
-                  {serviceDetails.referenceNumber}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <FiClock className="h-5 w-5 text-orange-500 mr-2" />
-                <span className="text-gray-700">
-                  Estimated completion: {serviceDetails.estimatedCompletion}
-                </span>
-              </div>
-            </div>
-          </div> */}
-
+        <div className="p-4 sm:p-6">
           {/* Details Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6">
             {/* Service Details */}
-            <div className="border border-gray-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FiFile className="text-orange-500 mr-2" />
+            <div className="border border-gray-200 rounded-lg p-4 sm:p-5">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                <FiFile className="text-orange-500 mr-2 text-lg" />
                 Service Details
               </h3>
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <p className="text-sm text-gray-500">Service Requested</p>
-                  <p className="font-medium text-orange-400">
+                  <p className="text-xs sm:text-sm text-gray-500">Service Requested</p>
+                  <p className="font-medium text-orange-400 text-sm sm:text-base">
                     {task?.service?.name}
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-xs sm:text-sm text-gray-400">
                     {task?.service?.description}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Submitted Documents</p>
-                  <ul className="list-disc list-inside text-gray-700">
+                  <p className="text-xs sm:text-sm text-gray-500">Submitted Documents</p>
+                  <ul className="list-disc list-inside text-gray-700 text-xs sm:text-sm">
                     {task?.documents?.map((doc, index) => (
-                      <div key={doc._id} className="space-y-2">
+                      <div key={doc._id} className="space-y-1">
                         <li className="truncate">
                           {doc.name}{" "}
                           <span
@@ -124,7 +97,6 @@ function ServiceConfirmation() {
                             view Document
                           </span>
                         </li>
-
                         <p className="text-xs text-gray-400">
                           {doc.description}
                         </p>
@@ -136,28 +108,28 @@ function ServiceConfirmation() {
             </div>
 
             {/* Customer Details */}
-            <div className="border border-gray-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FiUser className="text-orange-500 mr-2" />
+            <div className="border border-gray-200 rounded-lg p-4 sm:p-5">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                <FiUser className="text-orange-500 mr-2 text-lg" />
                 Your Information
               </h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">Full Name</p>
-                  <p className="font-medium">{userData?.customer?.name}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Full Name</p>
+                  <p className="font-medium text-sm sm:text-base">{userData?.customer?.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Email Address</p>
-                  <p className="font-medium flex items-center">
-                    <FiMail className="mr-2 text-gray-400" />
-                    {userData.customer.email}
+                  <p className="text-xs sm:text-sm text-gray-500">Email Address</p>
+                  <p className="font-medium flex items-center text-sm sm:text-base">
+                    <FiMail className="mr-2 text-gray-400 text-sm" />
+                    {userData?.customer?.email}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Phone Number</p>
-                  <p className="font-medium flex items-center">
-                    <FiPhone className="mr-2 text-gray-400" />
-                    {userData.customer.phone}
+                  <p className="text-xs sm:text-sm text-gray-500">Phone Number</p>
+                  <p className="font-medium flex items-center text-sm sm:text-base">
+                    <FiPhone className="mr-2 text-gray-400 text-sm" />
+                    {userData?.customer?.phone}
                   </p>
                 </div>
               </div>
@@ -165,48 +137,48 @@ function ServiceConfirmation() {
           </div>
 
           {/* Next Steps */}
-          <div className="bg-gray-50 rounded-lg p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-gray-50 rounded-lg p-4 sm:p-5 mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">
               What Happens Next?
             </h3>
-            <ol className="space-y-4">
+            <ol className="space-y-3">
               <li className="flex">
-                <div className="flex-shrink-0 mr-4">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-orange-100 text-orange-600 font-bold">
+                <div className="flex-shrink-0 mr-3">
+                  <div className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-orange-100 text-orange-600 font-bold text-sm">
                     1
                   </div>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">Document Review</p>
-                  <p className="text-gray-600">
+                  <p className="font-medium text-gray-800 text-sm sm:text-base">Document Review</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     Our team will verify your submitted documents within 24
                     hours.
                   </p>
                 </div>
               </li>
               <li className="flex">
-                <div className="flex-shrink-0 mr-4">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-orange-100 text-orange-600 font-bold">
+                <div className="flex-shrink-0 mr-3">
+                  <div className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-orange-100 text-orange-600 font-bold text-sm">
                     2
                   </div>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">Status Updates</p>
-                  <p className="text-gray-600">
+                  <p className="font-medium text-gray-800 text-sm sm:text-base">Status Updates</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     You'll receive email notifications at each stage of the
                     process.
                   </p>
                 </div>
               </li>
               <li className="flex">
-                <div className="flex-shrink-0 mr-4">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-orange-100 text-orange-600 font-bold">
+                <div className="flex-shrink-0 mr-3">
+                  <div className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-orange-100 text-orange-600 font-bold text-sm">
                     3
                   </div>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">Completion</p>
-                  <p className="text-gray-600">
+                  <p className="font-medium text-gray-800 text-sm sm:text-base">Completion</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     Your processed documents will be delivered via your
                     preferred method.
                   </p>
@@ -216,20 +188,14 @@ function ServiceConfirmation() {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
             <Button
               onClick={() => navigate("/customer-home")}
               variant="outline"
-              className="px-6 py-3"
+              className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base"
             >
               Back to Dashboard
             </Button>
-            {/* <Button
-              onClick={() => window.print()}
-              className="bg-orange-600 hover:bg-orange-700 px-6 py-3"
-            >
-              Print Confirmation
-            </Button> */}
           </div>
         </div>
       </motion.div>

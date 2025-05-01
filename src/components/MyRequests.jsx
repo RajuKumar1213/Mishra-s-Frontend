@@ -6,6 +6,25 @@ import spinner from "/spinner.svg";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
+const statusStyles = {
+  NEW: "bg-blue-100 text-blue-800",
+  DOCUMENTS_UPLOADED: "bg-purple-100 text-purple-800",
+  ASSIGNED: "bg-indigo-100 text-indigo-800",
+  IN_PROGRESS: "bg-yellow-100 text-yellow-800 animate-pulse",
+  COMPLETED: "bg-green-100 text-green-800",
+  REJECTED: "bg-red-100 text-red-800",
+  DEFAULT: "bg-gray-100 text-gray-800",
+};
+
+const statusLabels = {
+  NEW: "New",
+  DOCUMENTS_UPLOADED: "Document Uploaded",
+  ASSIGNED: "Assigned",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  REJECTED: "Rejected",
+};
+
 function MyRequests() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,112 +37,80 @@ function MyRequests() {
       .then((response) => {
         if (response.statusCode === 200) {
           setTasks(response.data);
-          setLoading(false);
         }
       })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
   }, []);
 
-  return (
-    <div className="mt-6  bg-white rounded-xl shadow-md overflow-hidden p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">
-        Your Active Requests
-      </h2>
-      {loading ? (
-        <img className="mx-auto" src={spinner} />
-      ) : !tasks?.length ? (
-        <h2 className="text-md font-thin text-gray-500 ">
+  if (loading) {
+    return (
+      <div className="mt-4 bg-white rounded-xl shadow-sm p-2 md:p-4 sm:p-6 text-center max-w-4xl mx-auto">
+        <img className="inline-block w-8 h-8" src={spinner} alt="Loading..." />
+      </div>
+    );
+  }
+
+  if (!tasks?.length) {
+    return (
+      <div className="mt-4 bg-white rounded-xl shadow-sm p-4 sm:p-6 text-center max-w-4xl mx-auto">
+        <h2 className="text-base sm:text-lg font-light text-gray-500">
           No tasks found. Choose some service to get started.
         </h2>
-      ) : (
-        tasks.map((task) => (
-          <div className="space-y-4 mt-3">
-            <div className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start">
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 bg-white rounded-xl shadow-sm overflow-hidden p-4 sm:p-6 max-w-4xl mx-auto">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
+        Your Active Requests
+      </h2>
+      <div className="space-y-4">
+        {tasks.map((task) => {
+          const statusClass = statusStyles[task.status] || statusStyles.DEFAULT;
+          const statusLabel = statusLabels[task.status] || "Unknown";
+
+          return (
+            <div
+              key={task._id}
+              className="p-4 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow"
+            >
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                 <div>
-                  <h3 className="font-medium text-gray-800">
+                  <h3 className="font-medium text-gray-800 text-base sm:text-lg">
                     {task?.serviceName}
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Requested on{" "}
-                    {format(new Date(task?.createdAt), "dd MMMM yyyy")}
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                    Requested on {format(new Date(task?.createdAt), "dd MMM yyyy")}
                   </p>
                 </div>
                 <span
-                  className={`px-3 py-1 text-xs font-medium rounded-full 
-    ${task?.status === "NEW" && "bg-blue-100 text-blue-800"}
-    ${task?.status === "DOCUMENTS_UPLOADED" && "bg-purple-100 text-purple-800"}
-    ${task?.status === "ASSIGNED" && "bg-indigo-100 text-indigo-800"}
-    ${
-      task?.status === "IN_PROGRESS" &&
-      "bg-yellow-100 text-yellow-800 animate-pulse"
-    }
-    ${task?.status === "COMPLETED" && "bg-green-100 text-green-800"}
-    ${task?.status === "REJECTED" && "bg-red-100 text-red-800"}
-    ${
-      ![
-        "NEW",
-        "DOCUMENTS_UPLOADED",
-        "ASSIGNED",
-        "IN_PROGRESS",
-        "COMPLETED",
-        "REJECTED",
-      ].includes(task?.status) && "bg-gray-100 text-gray-800"
-    }
-  `}
+                  className={`px-3 py-1 text-xs font-medium rounded-full ${statusClass} w-fit`}
                 >
-                  {task?.status === "NEW"
-                    ? "New"
-                    : task?.status === "DOCUMENTS_UPLOADED"
-                    ? "Document Uploaded"
-                    : task?.status === "ASSIGNED"
-                    ? "Assigned"
-                    : task?.status === "IN_PROGRESS"
-                    ? "In Progress"
-                    : task?.status === "COMPLETED"
-                    ? "Completed"
-                    : task?.status === "REJECTED"
-                    ? "Rejected"
-                    : "Unknown"}
+                  {statusLabel}
                 </span>
               </div>
-              <div className="mt-3 flex items-center text-sm text-gray-500">
+
+              <div className="mt-3 flex items-center text-xs sm:text-sm text-gray-500">
                 <span className="mr-2">Assigned to:</span>
-                <div className="flex items-center">
-                  {/* <img
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
-                    alt="Professional"
-                    className="w-6 h-6 rounded-full mr-2"
-                  /> */}
-                  <span>
-                    {task?.professional
-                      ? "Professional"
-                      : "Not assigned to any professional yet"}
-                  </span>
-                </div>
+                <span>
+                  {task?.professional?.name || "Not assigned to any professional yet"}
+                </span>
               </div>
+
               <div className="mt-3 flex space-x-3">
-                {/* <button className="text-sm text-[#FF6F00] hover:text-[#E65C00] flex items-center">
-                  <FiMessageSquare className="mr-1" />
-                  Message
-                </button> */}
                 <Link to={`details/${task._id}`}>
-                  <button className="text-sm cursor-pointer text-orange-500 hover:text-orange-700 flex items-center">
+                  <button className="text-xs sm:text-sm text-orange-500 hover:text-orange-700 flex items-center">
                     <RiServiceLine className="mr-1" />
                     View Details
                   </button>
                 </Link>
               </div>
             </div>
-          </div>
-        ))
-      )}
+          );
+        })}
+      </div>
     </div>
   );
 }
